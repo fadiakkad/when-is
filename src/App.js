@@ -4,8 +4,8 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import Header from "./components/Ar/Header";
-import { LoadingSpinner } from "./components/LoadingSpinner.js";
+import Header from "./components/common/Header.js";
+import { LoadingSpinner } from "./components/common/LoadingSpinner.js";
 const landingPage = lazy(() => import("./components/Ar/LandingPageAR.js"));
 const routes = [
   {
@@ -21,17 +21,17 @@ const routes = [
   {
     // Articles page:
     path: "/ar/general/:articleSlug/",
-    component: lazy(() => import("./components/Ar/General-Events.js")),
+    component: lazy(() => import("./components/Ar/General/General-Events.js")),
   },
   {
     // General page:
     path: "/ar/general/",
-    component: lazy(() => import("./components/Ar/General.js")),
+    component: lazy(() => import("./components/Ar/General/GeneralList.js")),
   },
   {
     // Countries page:
     path: "/ar/countries/:countryCode/",
-    component: lazy(() => import("./components/Ar/countries/Cards.js")),
+    component: lazy(() => import("./components/Ar/countries/CountresList.js")),
   },
   {
     // Country Articles page:

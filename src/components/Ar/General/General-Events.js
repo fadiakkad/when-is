@@ -1,33 +1,24 @@
 import React, { useState, useEffect } from "react";
-import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import { useParams } from "react-router-dom";
 import * as XLSX from "xlsx";
-import articlesSheet from "../../Excel/Data/General.xlsx";
-import { importAllImages } from "../../helpers/importImages";
-import SharedHelmet from "../Helmet";
-const calculateTimeLeft = (targetDate) => {
-  const difference = +new Date(targetDate) - +new Date();
-  let timeLeft = {};
+import articlesSheet from "../../../Excel/Data/General.xlsx";
+import { importAllImages } from "../../../helpers/importImages";
+import SharedHelmet from "../../common/Helmet";
+import { websiteURL, countriesURL } from "../../common/constants";
+import LastUpdate from "../../common/LastUpdate";
+import { TopAdsDesktop, BodyAdsMobile, BodyAdsDesktop } from "../../common/Ads";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import CountdownTimer from "../../common/CountdownTimer";
 
-  if (difference > 0) {
-    timeLeft = {
-      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-      minutes: Math.floor((difference / 1000 / 60) % 60),
-      seconds: Math.floor((difference / 1000) % 60),
-    };
-  }
-  return timeLeft;
-};
 const images = importAllImages(
-  require.context("../../images", false, /\.(png|jpe?g|webp)$/)
+  require.context("../../../images", false, /\.(png|jpe?g|webp)$/)
 );
 
 const ArticlePage = () => {
   const { articleSlug } = useParams();
   const [article, setArticle] = useState(null);
-  const [timeLeft, setTimeLeft] = useState({});
 
   const loadExcelData = async () => {
     const response = await fetch(articlesSheet);
@@ -43,9 +34,7 @@ const ArticlePage = () => {
       const articleData = sheet.find((row) => row.URL === articleSlug);
       setArticle(articleData);
 
-      if (articleData) {
-        setTimeLeft(calculateTimeLeft(articleData.TargetDate));
-      }
+  
     };
 
     fileReader.readAsArrayBuffer(blob);
@@ -56,15 +45,6 @@ const ArticlePage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [articleSlug]);
 
-  useEffect(() => {
-    if (article) {
-      const interval = setInterval(() => {
-        setTimeLeft(calculateTimeLeft(article.TargetDate));
-      }, 1000);
-
-      return () => clearInterval(interval);
-    }
-  }, [article]);
 
   if (!article) {
     return <p>المقال غير موجود</p>;
@@ -73,16 +53,23 @@ const ArticlePage = () => {
   const {
     Title,
     ImageURL,
+    LastUpdated,
+    TextBelowTitle,
+    CountDown,
+    EventName,
     Intro,
     WhatIs,
     Importance,
     Preparation,
     Conclusion,
+    TargetDate,
     Helmet_Description,
     Helmet_Keywords,
   } = article;
 
-  const OG_URL = `https://when-is.com/ar/general/${articleSlug}`; //TODO
+  console.log(TargetDate,"xx");
+  const OG_URL = `${websiteURL}/ar/${countriesURL}/general/${articleSlug}`;
+  const locale = "ar"; // Example locale
 
   return (
     <Container className="rtl">
@@ -93,56 +80,72 @@ const ArticlePage = () => {
         OG_URL={OG_URL}
         IMAGE={images[ImageURL]}
       />
-      <Card
-        className="my-4"
-        style={{
-          borderRadius: "10px",
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-          borderColor: "#1e81b0",
-        }}
-      >
-        <Card.Body>
+      <TopAdsDesktop />
+      <br />
+
+
+      <Row>
+        <Col xs={12} lg={8}>
           {/* Article Title */}
-          <Card.Title style={{ textAlign: "center", color: "#1e81b0" }}>
+          <div style={{ color: "#1e81b0" }}>
             <h1>{Title}</h1>
             <p>Title</p>
-          </Card.Title>
 
-          {/* Article Image */}
-          {ImageURL && (
-            <div style={{ textAlign: "center", marginBottom: "20px" }}>
-              <img
-                src={images[ImageURL]}
-                alt={Title}
-                style={{
-                  width: "100%",
-                  maxHeight: "600px",
-                  objectFit: "cover",
-                  borderRadius: "10px",
-                }}
-              />
-              <p>ImageURL</p>
-            </div>
-          )}
-
-          {/* Countdown Timer */}
-          <div
-            style={{
-              textAlign: "center",
-              backgroundColor: "#f8f9fa",
-              padding: "15px",
-              borderRadius: "10px",
-              marginTop: "20px",
-            }}
-          >
-            <h2 style={{ color: "#1e81b0" }}>{Title}</h2>
-            <p>Title</p>
-            <div style={{ fontSize: "50px", fontWeight: "bold" }}>
-              {timeLeft.days} أيام {timeLeft.hours} ساعات {timeLeft.minutes}{" "}
-              دقائق {timeLeft.seconds} ثواني
-            </div>
           </div>
+          <p >
+            {TextBelowTitle}
+            <br />
+            TextBelowTitle
+          </p>
 
+          {/* Last Updated */}
+
+          <LastUpdate label="تاريخ اخر تحديث" isoDate={LastUpdated} locale={locale} />
+
+
+        </Col>
+        <Col xs={12} lg={4}>
+          آخر الاحداث العامة التي تم نشرها
+          <br />
+          اضافة كاردات لاخر 6 مقالات  حسب التاريخ مع صورتها مع زر المزيد
+          <br/> 
+          انشائها في كومبوننت جديد
+        </Col>
+        <Row>
+          <Col xs={12} lg={8}>
+            {/* Article Image */}
+            {ImageURL && (
+              <div>
+                <br />
+                <img
+                  src={images[ImageURL]}
+                  alt={Title}
+                  style={{
+                    width: "614px",
+                    maxHeight: "292px",
+                    objectFit: "cover",
+                    borderRadius: "10px",
+                  }}
+                />
+                <p>ImageURL</p>
+              </div>
+            )}
+          </Col>
+          <Col xs={12} lg={4}>
+            <br />
+            <BodyAdsDesktop />
+          </Col>
+        </Row>
+      </Row>
+      <br />
+      <BodyAdsMobile />
+
+      <hr />
+      {/* Countdown Timer */}
+      <CountdownTimer targetDate={TargetDate} CountDown={CountDown} EventName={EventName} shareUrl={OG_URL}/>
+
+      <Row>
+        <Col xs={12} lg={9}>
           {/* Table of Contents */}
           <div
             style={{
@@ -249,8 +252,18 @@ const ArticlePage = () => {
             <p style={{ fontSize: "18px", lineHeight: "1.8" }}>{Conclusion}</p>
             <p className="text-center">Conclusion</p>
           </div>
-        </Card.Body>
-      </Card>
+        </Col>
+        <Col xs={12} lg={3}>
+          <br />
+          مواعيد قريبة للأحداث العامة (الاقرب فالاقرب)
+          <br />
+          اضافة هنا اقرب 6 مواعيد للأحداث العامة ب كاردات وصور صغيرة مع زر المزيد
+          <br />
+          انشاء كومبوننت جديد
+        </Col>
+
+      </Row>
+
     </Container>
   );
 };

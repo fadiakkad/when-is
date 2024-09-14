@@ -4,7 +4,9 @@ import Container from "react-bootstrap/Container";
 import { useParams } from "react-router-dom";
 import * as XLSX from "xlsx";
 import { importAllImages } from "../../../helpers/importImages";
-import SharedHelmet from "../../Helmet";
+import SharedHelmet from "../../common/Helmet";
+import { websiteURL, countriesURL } from "../../common/constants";
+
 
 const calculateTimeLeft = (targetDate) => {
   const difference = +new Date(targetDate) - +new Date();
@@ -57,6 +59,8 @@ const ArticlePage = () => {
               targetDate: matchedRow.TargetDate,
               DESCRIPTION: matchedRow.Helmet_Description,
               KEYWORDS: matchedRow.Helmet_Keywords,
+              LastUpdated: matchedRow.LastUpdated,
+              BelowTitle : matchedRow.BelowTitle
             };
 
             setCardData(parsedData);
@@ -88,7 +92,7 @@ const ArticlePage = () => {
     return <p>المقال غير موجود</p>;
   }
 
-  const OG_URL = `https://when-is.com/ar/countries/${countryCode}/${url}`; //TODO
+  const OG_URL = `${websiteURL}/ar/${countriesURL}/${countryCode}/${url}`; 
 
   return (
     <Container className="rtl">
@@ -113,7 +117,13 @@ const ArticlePage = () => {
           <Card.Title style={{ textAlign: "center", color: "#1e81b0" }}>
             <h1>{cardData.cardTitle}</h1>
           </Card.Title>
-
+          <p>
+            {cardData.BelowTitle}
+          </p>
+          <p>
+            s
+            <strong>آخر تحديث:</strong> {cardData.LastUpdated}
+          </p>
           {/* Article Image */}
           {cardData.cardImg && (
             <div style={{ textAlign: "center", marginBottom: "20px" }}>
@@ -247,9 +257,9 @@ const ArticlePage = () => {
               {cardData.importance}
             </p>
 
-            <br />
+       
             <hr />
-            <br />
+        
 
             <h2
               id="preparation"

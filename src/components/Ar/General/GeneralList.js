@@ -1,26 +1,26 @@
-import React, { useState, useEffect, lazy, Suspense } from "react";
+import React, { useState, useEffect } from "react";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import { isMobile } from "react-device-detect";
-import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
-import landingPageSheet from "../../Excel/Data/General.xlsx";
-import { importAllImages } from "../../helpers/importImages";
-import { countries } from "./countries/CountriesNamesCodes";
+import { importAllImages } from "../../../helpers/importImages";
+import landingPageSheet from "../../../Excel/Data/General.xlsx";
+import { countries } from "../countries/CountriesNamesCodes";
+import { GeneralCountryListAdsDesktop,GeneralCountryListAdsMobile} from "../../common/Ads";
 
-const CountryFlagsSection = lazy(() => import('../../helpers/CountryFlagsSection'));
-
-function LandingPage() {
+function General() {
   const [searchTerm, setSearchTerm] = useState("");
   const [cardData, setCardData] = useState([]);
   const [countryFlags, setCountryFlags] = useState([]);
   const images = importAllImages(
-    require.context("../../images", false, /\.(png|jpe?g|webp)$/)
+    require.context("../../../images", false, /\.(png|jpe?g|webp)$/)
   );
+
+
   useEffect(() => {
-    const fetchExcelData = async () => {
+    const fetchCardData = async () => {
       try {
         const response = await fetch(landingPageSheet);
         const arrayBuffer = await response.arrayBuffer();
@@ -34,13 +34,14 @@ function LandingPage() {
           cardImg: images[row.ImageURL],
           url: row.URL,
         }));
+
         setCardData(parsedData);
       } catch (error) {
-        console.error("Error loading Excel file:", error);
+        console.error("Error loading card data:", error);
       }
     };
 
-    fetchExcelData();
+    fetchCardData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -59,14 +60,13 @@ function LandingPage() {
           jsonData.forEach((row) => {
             const parsedCountryData = {
               name: country.name,
-              countryCode: country.countryCode.toUpperCase(),
+              countryCode: country.countryCode,
               url: country.countryCode,
             };
 
             const existingCountry = allCountriesData.find(
               (data) => data.countryCode === parsedCountryData.countryCode
             );
-            console.log(allCountriesData);
 
             if (!existingCountry) {
               allCountriesData.push(parsedCountryData);
@@ -88,15 +88,6 @@ function LandingPage() {
       card.cardTitle.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => a.date - b.date);
-
-  const filteredCountries = countryFlags.filter((country) =>
-    country.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const limitedCards = filteredCards.slice(0, 6);
-
-  const hasResults = limitedCards.length > 0 || filteredCountries.length > 0;
-
   return (
     <>
       {/* Search bar */}
@@ -126,26 +117,22 @@ function LandingPage() {
 
       <br />
 
-      {/* Card grid */}
-      {hasResults ? (
-        <>
-          <Row xs={1} sm={2} md={4} lg={4} className="g-4 rtl">
-            {limitedCards.length > 0 ? (
-              limitedCards.map((card, index) => (
-                <Col key={index} style={{ paddingBottom: "10px" }}>
-                  <a
-                    href={`/ar/general/${card.url}/`}  // Update the path if needed
-                    style={{ textDecoration: "none" }} // Removes underline from link
+      <Row className="rtl">
+        <Col xs={12} lg={9}>
+          <Row>
+            {filteredCards.map((card, index) => (
+              <React.Fragment key={index}>
+                <Col xs={12} md={4} lg={4} className="mb-4">
+                  <Card
+                   
+                    style={{
+                      borderRadius: "10px",
+                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                      borderColor: "#1e81b0",
+                    // Ensures card takes full width of the column
+                    }}
                   >
-
-                    <Card
-                      style={{
-                        borderRadius: "10px",
-                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-                        borderColor: "#1e81b0",
-                      }}
-                    >
-                      {/* Card image */}
+                    <a href={`/ar/general/${card.url}/`} style={{ textDecoration: "none" }}>
                       <Card.Img
                         variant="top"
                         src={card.cardImg}
@@ -159,70 +146,48 @@ function LandingPage() {
                         }}
                       />
                       <Card.Body>
-                        {/* Card title */}
-                        <Card.Title
-                          style={{ textAlign: "center", color: "#1e81b0" }}
-                        >
-                          <h2 style={{ fontSize: "18px", fontWeight: "bold" }}>
-                            {card.cardTitle}
-                          </h2>
+                        <Card.Title style={{ textAlign: "center", color: "#1e81b0" }}>
+                          <h2 style={{ fontSize: "18px", fontWeight: "bold" }}>{card.cardTitle}</h2>
                         </Card.Title>
                       </Card.Body>
-                    </Card>
-                  </a>
+                    </a>
+                  </Card>
                 </Col>
-              ))
-            ) : (
-              <p
-                className="text-center"
-                style={{
-                  display: "flex",
-                  textAlign: "center",
-                  justifyContent: "center",
-                  transform: isMobile ? "" : "translateX(150%)",
-                }}
-              >
-                لا توجد نتائج مطابقة
-              </p>
-            )}
-          </Row>
-          <br />
-          {/* View more button */}
-          <div className="text-center my-4">
-            <a
-              href="/ar/general/"
-              className="button-hover"
-              style={{
-                display: "inline-block",
-                backgroundColor: "#1e81b0",
-                borderRadius: "25px",
-                padding: "10px 20px",
-                fontSize: "1.25rem",
-                textDecoration: "none",
-                color: "white",
-                transition: "background-color 0.3s ease",
-              }}
-              onMouseEnter={(event) => {
-                event.target.style.backgroundColor = "#0f5a80";
-              }}
-              onMouseLeave={(event) => {
-                event.target.style.backgroundColor = "#1e81b0";
-              }}
-            >
-              المزيد من الأحداث
-            </a>
-          </div>
 
+                {/* Add AdsComponent after every 3rd card */}
+                {(index + 1) % 3 === 0 && (
+                  <Col xs={12} className="mb-4">
+                    <GeneralCountryListAdsMobile />
+                  </Col>
+                )}
+              </React.Fragment>
+            ))}
+          </Row>
+        </Col>
+
+        <Col xs={12} lg={3}>
+          <br />
+          <GeneralCountryListAdsDesktop />
           <hr />
-          <Suspense fallback={<div>تحميل...</div>}>
-            <CountryFlagsSection countryFlags={countryFlags} />
-          </Suspense>
-        </>
-      ) : (
-        ""
-      )}
+          <div className="mt-3">
+            <p style={{ fontSize: "24px", fontWeight: "bold" }}>
+              أحداث مخصصة لكل دولة
+            </p>{" "}
+            {countryFlags.map((country, index) => (
+              <div key={index} style={{ marginBottom: "10px" }}>
+                <a
+                  href={`/ar/countries/${country.url}/`}
+                  style={{ color: "#1e81b0", textDecoration: "none" }}
+                >
+                  {country.name}
+                </a>
+              </div>
+            ))}
+          </div>
+        </Col>
+      </Row>
     </>
   );
 }
 
-export default LandingPage;
+export default General;
