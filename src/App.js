@@ -1,9 +1,5 @@
 import React, { lazy, Suspense } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/common/Header.js";
 import { LoadingSpinner } from "./components/common/LoadingSpinner.js";
 const landingPage = lazy(() => import("./components/Ar/LandingPageAR.js"));
@@ -36,7 +32,24 @@ const routes = [
   {
     // Country Articles page:
     path: "/ar/countries/:countryCode/:url",
-    component: lazy(() => import("./components/Ar/countries/Countries-Events.js")),
+    component: lazy(() =>
+      import("./components/Ar/countries/Countries-Events.js")
+    ),
+  },
+  {
+    // Search Results page:
+    path: "/ar/search-results",
+    component: lazy(() => import("./components/common/SearchResults.js")),
+  },
+  {
+    // Holidays Table page:
+    path: "/ar/:countryCode/holidays",
+    component: lazy(() => import("./components/Ar/countries/HolidayTable.js")),
+  },
+  {
+    // Holidays Table page:
+    path: "/ar/location",
+    component: lazy(() => import("./components/common/LocationAPI.js")),
   },
 ];
 function App() {

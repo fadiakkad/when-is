@@ -1,14 +1,20 @@
+/* eslint-disable no-loop-func */
 import React, { useState, useEffect } from "react";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
-import { isMobile } from "react-device-detect";
 import * as XLSX from "xlsx";
 import { importAllImages } from "../../../helpers/importImages";
 import landingPageSheet from "../../../Excel/Data/General.xlsx";
 import { countries } from "../countries/CountriesNamesCodes";
-import { GeneralCountryListAdsDesktop,GeneralCountryListAdsMobile} from "../../common/Ads";
+import {
+  GeneralCountryListAdsDesktop,
+  GeneralCountryListAdsMobile,
+} from "../../common/Ads";
+import { SearchBar } from "../../common/SearchBar";
+import { blogTextStyle } from "../../common/constants";
+
+let allCountriesData = "";
 
 function General() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -17,7 +23,6 @@ function General() {
   const images = importAllImages(
     require.context("../../../images", false, /\.(png|jpe?g|webp)$/)
   );
-
 
   useEffect(() => {
     const fetchCardData = async () => {
@@ -47,7 +52,7 @@ function General() {
 
   useEffect(() => {
     const fetchCountryFlags = async () => {
-      const allCountriesData = [];
+      allCountriesData = [];
 
       for (const country of countries) {
         try {
@@ -83,56 +88,41 @@ function General() {
     fetchCountryFlags();
   }, []);
 
-  const filteredCards = cardData
-    .filter((card) =>
-      card.cardTitle.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .sort((a, b) => a.date - b.date);
+  const combinedData = [...cardData, ...allCountriesData];
+
+  // const filteredCards = cardData
+  //   .filter((card) =>
+  //     card.cardTitle.toLowerCase().includes(searchTerm.toLowerCase())
+  //   )
+  //   .sort((a, b) => a.date - b.date);
   return (
     <>
       {/* Search bar */}
-      <div className="container my-4">
-        <div className="row justify-content-center">
-          <Form.Group controlId="searchBar">
-            <Form.Control
-              type="text"
-              placeholder="..ابحث هنا"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                borderRadius: "25px",
-                padding: "10px",
-                fontSize: "1.25rem",
-                border: "1px solid #1e81b0",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                color: "#1e81b0",
-                textAlign: "right",
-                width: isMobile ? "100%" : "50%",
-                transform: isMobile ? "" : "translateX(50%)",
-              }}
-            />
-          </Form.Group>
-        </div>
-      </div>
+      <SearchBar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        data={combinedData}
+      />
 
       <br />
 
       <Row className="rtl">
         <Col xs={12} lg={9}>
           <Row>
-            {filteredCards.map((card, index) => (
+            {cardData.map((card, index) => (
               <React.Fragment key={index}>
                 <Col xs={12} md={4} lg={4} className="mb-4">
                   <Card
-                   
                     style={{
                       borderRadius: "10px",
                       boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
                       borderColor: "#1e81b0",
-                    // Ensures card takes full width of the column
                     }}
                   >
-                    <a href={`/ar/general/${card.url}/`} style={{ textDecoration: "none" }}>
+                    <a
+                      href={`/ar/general/${card.url}/`}
+                      style={{ textDecoration: "none", ...blogTextStyle }}
+                    >
                       <Card.Img
                         variant="top"
                         src={card.cardImg}
@@ -146,8 +136,12 @@ function General() {
                         }}
                       />
                       <Card.Body>
-                        <Card.Title style={{ textAlign: "center", color: "#1e81b0" }}>
-                          <h2 style={{ fontSize: "18px", fontWeight: "bold" }}>{card.cardTitle}</h2>
+                        <Card.Title
+                          style={{ textAlign: "center", color: "#1e81b0" }}
+                        >
+                          <h2 style={{ fontSize: "18px", fontWeight: "bold" }}>
+                            {card.cardTitle}
+                          </h2>
                         </Card.Title>
                       </Card.Body>
                     </a>
@@ -170,14 +164,14 @@ function General() {
           <GeneralCountryListAdsDesktop />
           <hr />
           <div className="mt-3">
-            <p style={{ fontSize: "24px", fontWeight: "bold" }}>
+            <p style={{ fontSize: "24px", fontWeight: "bold", ...blogTextStyle, color: "black" }}>
               أحداث مخصصة لكل دولة
             </p>{" "}
             {countryFlags.map((country, index) => (
               <div key={index} style={{ marginBottom: "10px" }}>
                 <a
                   href={`/ar/countries/${country.url}/`}
-                  style={{ color: "#1e81b0", textDecoration: "none" }}
+                  style={{ ...blogTextStyle, textDecoration: "none" }}
                 >
                   {country.name}
                 </a>

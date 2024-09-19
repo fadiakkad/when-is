@@ -2,16 +2,20 @@ import React, { useState, useEffect, lazy, Suspense } from "react";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
 import { isMobile } from "react-device-detect";
-import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import landingPageSheet from "../../Excel/Data/General.xlsx";
 import { importAllImages } from "../../helpers/importImages";
 import { countries } from "./countries/CountriesNamesCodes";
+import { LoadingSpinner } from "../common/LoadingSpinner";
+import { SearchBar } from "../common/SearchBar";
+import { blogTextStyle, generalURL, locale } from "../common/constants";
+import HolidayMessage from "../common/LocationAPI";
 
-const CountryFlagsSection = lazy(() => import('../../helpers/CountryFlagsSection'));
-
+const CountryFlagsSection = lazy(() =>
+  import("../../helpers/CountryFlagsSection")
+);
+let allCountriesData = "";
 function LandingPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [cardData, setCardData] = useState([]);
@@ -19,6 +23,7 @@ function LandingPage() {
   const images = importAllImages(
     require.context("../../images", false, /\.(png|jpe?g|webp)$/)
   );
+
   useEffect(() => {
     const fetchExcelData = async () => {
       try {
@@ -46,7 +51,7 @@ function LandingPage() {
 
   useEffect(() => {
     const fetchCountryFlags = async () => {
-      const allCountriesData = [];
+      allCountriesData = [];
 
       for (const country of countries) {
         try {
@@ -56,17 +61,17 @@ function LandingPage() {
           const sheet = workbook.Sheets[workbook.SheetNames[0]];
           const jsonData = XLSX.utils.sheet_to_json(sheet);
 
+          // eslint-disable-next-line no-loop-func
           jsonData.forEach((row) => {
             const parsedCountryData = {
               name: country.name,
-              countryCode: country.countryCode.toUpperCase(),
+              countryCode: country.countryCode,
               url: country.countryCode,
             };
 
             const existingCountry = allCountriesData.find(
               (data) => data.countryCode === parsedCountryData.countryCode
             );
-            console.log(allCountriesData);
 
             if (!existingCountry) {
               allCountriesData.push(parsedCountryData);
@@ -84,44 +89,20 @@ function LandingPage() {
   }, []);
 
   const filteredCards = cardData
-    .filter((card) =>
-      card.cardTitle.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+    .filter((card) => card.cardTitle)
     .sort((a, b) => a.date - b.date);
 
-  const filteredCountries = countryFlags.filter((country) =>
-    country.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   const limitedCards = filteredCards.slice(0, 6);
-
-  const hasResults = limitedCards.length > 0 || filteredCountries.length > 0;
+  const hasResults = limitedCards.length > 0;
 
   return (
     <>
       {/* Search bar */}
-      <div className="container my-4">
-        <div className="row justify-content-center">
-          <Form.Group controlId="searchBar">
-            <Form.Control
-              type="text"
-              placeholder="..ابحث هنا"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                borderRadius: "25px",
-                padding: "10px",
-                fontSize: "1.25rem",
-                border: "1px solid #1e81b0",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                color: "#1e81b0",
-                textAlign: "right",
-                width: isMobile ? "100%" : "50%",
-                transform: isMobile ? "" : "translateX(50%)",
-              }}
-            />
-          </Form.Group>
-        </div>
+      <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+
+      <br />
+      <div>
+        <HolidayMessage />
       </div>
 
       <br />
@@ -134,10 +115,9 @@ function LandingPage() {
               limitedCards.map((card, index) => (
                 <Col key={index} style={{ paddingBottom: "10px" }}>
                   <a
-                    href={`/ar/general/${card.url}/`}  // Update the path if needed
-                    style={{ textDecoration: "none" }} // Removes underline from link
+                    href={`/${locale}/${generalURL}/${card.url}/`}
+                    style={{ textDecoration: "none", ...blogTextStyle }}
                   >
-
                     <Card
                       style={{
                         borderRadius: "10px",
@@ -180,6 +160,8 @@ function LandingPage() {
                   textAlign: "center",
                   justifyContent: "center",
                   transform: isMobile ? "" : "translateX(150%)",
+                  ...blogTextStyle,
+                  color: "black",
                 }}
               >
                 لا توجد نتائج مطابقة
@@ -190,7 +172,7 @@ function LandingPage() {
           {/* View more button */}
           <div className="text-center my-4">
             <a
-              href="/ar/general/"
+              href={`/${locale}/${generalURL}/`}
               className="button-hover"
               style={{
                 display: "inline-block",
@@ -199,8 +181,9 @@ function LandingPage() {
                 padding: "10px 20px",
                 fontSize: "1.25rem",
                 textDecoration: "none",
-                color: "white",
                 transition: "background-color 0.3s ease",
+                ...blogTextStyle,
+                color: "white",
               }}
               onMouseEnter={(event) => {
                 event.target.style.backgroundColor = "#0f5a80";
@@ -214,9 +197,10 @@ function LandingPage() {
           </div>
 
           <hr />
-          <Suspense fallback={<div>تحميل...</div>}>
+          <Suspense fallback={<LoadingSpinner />}>
             <CountryFlagsSection countryFlags={countryFlags} />
           </Suspense>
+          <br />
         </>
       ) : (
         ""

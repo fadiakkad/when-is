@@ -1,4 +1,4 @@
-const countryNames = {
+export const countryNames = {
   sy: "سوريا",
   sa: "السعودية",
   ae: "الإمارات",
@@ -22,7 +22,7 @@ const files = require.context(
   "../../../Excel/Data/Countries",
   false,
   /\.xlsx$/
-);  //TODO: Remove string
+); 
 
 export const countries = files.keys().map((file) => {
   const countryCode = file.replace("./", "").replace(".xlsx", "");

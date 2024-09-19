@@ -1,25 +1,30 @@
-import React, { useState, useEffect } from "react";
+/* eslint-disable no-loop-func */
+import React, { useState, useEffect, lazy } from "react";
 import { useParams } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
-import { isMobile } from "react-device-detect";
-import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import { importAllImages } from "../../../helpers/importImages";
 import { countries } from "./CountriesNamesCodes";
-import { GeneralCountryListAdsDesktop, GeneralCountryListAdsMobile } from "../../common/Ads";
+import {
+  GeneralCountryListAdsDesktop,
+  GeneralCountryListAdsMobile,
+} from "../../common/Ads";
+import { SearchBar } from "../../common/SearchBar";
+import landingPageSheet from "../../../Excel/Data/General.xlsx";
+import { blogTextStyle, countriesURL, locale } from "../../common/constants";
 
+let countryJsonData = "";
+let jsonData = "";
+let allCountriesData = "";
+const LatestArticles = lazy(() => import("../../common/LatestArticles"));
 function Cards() {
   const [searchTerm, setSearchTerm] = useState("");
   const [cardData, setCardData] = useState([]);
   const { countryCode } = useParams();
-  const [countryFlags, setCountryFlags] = useState([]);
-  const [visibleCards, setVisibleCards] = useState(9);
   // eslint-disable-next-line no-unused-vars
-  const [showMore, setShowMore] = useState(false);
-  const navigate = useNavigate();
+  const [countryFlags, setCountryFlags] = useState([]);
   const images = importAllImages(
     require.context("../../../images", false, /\.(png|jpe?g|webp)$/)
   );
@@ -36,15 +41,14 @@ function Cards() {
           const data = new Uint8Array(arrayBuffer);
           const workbook = XLSX.read(data, { type: "array" });
           const sheet = workbook.Sheets[workbook.SheetNames[0]];
-          const jsonData = XLSX.utils.sheet_to_json(sheet);
-          const parsedData = jsonData.map((row, index) => ({
+          countryJsonData = XLSX.utils.sheet_to_json(sheet);
+          const parsedData = countryJsonData.map((row, index) => ({
             cardNumber: index + 1,
             cardTitle: row.Title,
             cardImg: images[row.ImageURL],
             url: row.URL,
           }));
           setCardData(parsedData);
-          setShowMore(parsedData.length > 9);
         } else {
           console.error("Country code is not defined.");
         }
@@ -56,10 +60,9 @@ function Cards() {
     fetchCardData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countryCode]);
-
   useEffect(() => {
     const fetchCountryFlags = async () => {
-      const allCountriesData = [];
+      allCountriesData = [];
       for (const country of countries) {
         try {
           const response = await fetch(country.data);
@@ -88,56 +91,55 @@ function Cards() {
     };
     fetchCountryFlags();
   }, []);
+  useEffect(() => {
+    const fetchExcelData = async () => {
+      try {
+        const response = await fetch(landingPageSheet);
+        const arrayBuffer = await response.arrayBuffer();
+        const workbook = XLSX.read(arrayBuffer, { type: "array" });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        jsonData = XLSX.utils.sheet_to_json(sheet);
 
-  const filteredCards = cardData.filter((card) =>
-    card.cardTitle.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+        const parsedData = jsonData.map((row, index) => ({
+          cardNumber: index + 1,
+          cardTitle: row.Title,
+          cardImg: images[row.ImageURL],
+          url: row.URL,
+        }));
+        setCardData(parsedData);
+      } catch (error) {
+        console.error("Error loading Excel file:", error);
+      }
+    };
+
+    fetchExcelData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
       {/* Search bar */}
-      <div className="container my-4">
-        <div className="row justify-content-center">
-          <Form.Group controlId="searchBar">
-            <Form.Control
-              type="text"
-              placeholder="..ابحث هنا"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                borderRadius: "25px",
-                padding: "10px",
-                fontSize: "1.25rem",
-                border: "1px solid #1e81b0",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                color: "#1e81b0",
-                textAlign: "right",
-                width: isMobile ? "100%" : "50%",
-                transform: isMobile ? "" : "translateX(50%)",
-              }}
-            />
-          </Form.Group>
-        </div>
-      </div>
+      <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
       <br />
 
       <Row className="rtl">
         <Col xs={12} lg={9}>
           <Row>
-            {filteredCards.map((card, index) => (
+            {cardData.map((card, index) => (
               <React.Fragment key={index}>
                 <Col xs={12} md={4} lg={4} className="mb-4">
                   <Card
-
                     style={{
                       borderRadius: "10px",
                       boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
                       borderColor: "#1e81b0",
-                      // Ensures card takes full width of the column
                     }}
                   >
-                    <a href={`/ar/countries/${countryCode}/${card.url}/`} style={{ textDecoration: "none" }}>
+                    <a
+                      href={`/${locale}/${countriesURL}/${countryCode}/${card.url}/`}
+                      style={{ textDecoration: "none", ...blogTextStyle }}
+                    >
                       <Card.Img
                         variant="top"
                         src={card.cardImg}
@@ -151,8 +153,12 @@ function Cards() {
                         }}
                       />
                       <Card.Body>
-                        <Card.Title style={{ textAlign: "center", color: "#1e81b0" }}>
-                          <h2 style={{ fontSize: "18px", fontWeight: "bold" }}>{card.cardTitle}</h2>
+                        <Card.Title
+                          style={{ textAlign: "center", color: "#1e81b0" }}
+                        >
+                          <h2 style={{ fontSize: "18px", fontWeight: "bold" }}>
+                            {card.cardTitle}
+                          </h2>
                         </Card.Title>
                       </Card.Body>
                     </a>
@@ -174,9 +180,7 @@ function Cards() {
           <br />
           <GeneralCountryListAdsDesktop />
           <hr />
-          مواعيد قريبة للأحداث العامة (الاقرب فالاقرب)
-          اضافة هنا اقرب 6 مواعيد للأحداث العامة ب كاردات وصور صغيرة مع زر المزيد
-          انشاء كومبوننت جديد
+          <LatestArticles data={jsonData} sortBy="TargetDate" />
         </Col>
       </Row>
     </>
