@@ -34,6 +34,7 @@ const SharedArticlePage = ({
   locale = "ar",
   LatestArticlesData,
 }) => (
+
   <Container className="rtl">
     <SharedHelmet
       TITLE={Title}
