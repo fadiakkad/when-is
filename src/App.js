@@ -47,9 +47,24 @@ const routes = [
     component: lazy(() => import("./components/Ar/countries/HolidayTable.js")),
   },
   {
-    // Holidays Table page:
-    path: "/ar/location",
-    component: lazy(() => import("./components/common/LocationAPI.js")),
+    // Create Countdown page:
+    path: "/ar/create-countdown",
+    component: lazy(() => import("./components/common/createCountdown.js")),
+  },
+  {
+    // Admin dashboard page:
+    path: "/admin",
+    component: lazy(() => import("./components/Admin/AdminPanel.js")),
+  },
+  {
+    // Admin Login page:
+    path: "/login",
+    component: lazy(() => import("./components/Admin/AdminLogin.js")),
+  },
+  {
+    // Created Countdown page:
+    path: "/ar/countdown/:countdownId",
+    component: lazy(() => import("./components/common/Countdown.js")),
   },
 ];
 function App() {

@@ -1,13 +1,13 @@
-import * as XLSX from "xlsx";
+import { read, utils } from "xlsx";
 import { countryNames } from "../components/Ar/countries/CountriesNamesCodes";
 
 export const fetchGeneralData = async (filePath, images) => {
   try {
     const response = await fetch(filePath);
     const arrayBuffer = await response.arrayBuffer();
-    const workbook = XLSX.read(arrayBuffer, { type: "array" });
+    const workbook = read(arrayBuffer, { type: "array" });
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const jsonData = XLSX.utils.sheet_to_json(sheet);
+    const jsonData = utils.sheet_to_json(sheet);
     const parsedData = jsonData.map((row, index) => ({
       cardNumber: index + 1,
       cardTitle: row.Title,
@@ -34,9 +34,9 @@ export const fetchCountryFlags = async () => {
         const response = await fetch(excelFile.default);
         const arrayBuffer = await response.arrayBuffer();
         const data = new Uint8Array(arrayBuffer);
-        const workbook = XLSX.read(data, { type: "array" });
+        const workbook = read(data, { type: "array" });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(sheet); 
+        const jsonData = utils.sheet_to_json(sheet); 
 
         combinedJsonData.push(...jsonData); 
 

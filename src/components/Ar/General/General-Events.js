@@ -1,6 +1,6 @@
 import React, { useState, useEffect, lazy } from "react";
 import { useParams } from "react-router-dom";
-import * as XLSX from "xlsx";
+import { read, utils } from "xlsx";
 import articlesSheet from "../../../Excel/Data/General.xlsx";
 import { importAllImages } from "../../../helpers/importImages";
 import {
@@ -28,9 +28,9 @@ const ArticlePage = () => {
 
     fileReader.onload = (e) => {
       const arrayBuffer = e.target.result;
-      const workbook = XLSX.read(arrayBuffer, { type: "array" });
+      const workbook = read(arrayBuffer, { type: "array" });
       const sheetName = workbook.SheetNames[0];
-      sheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+      sheet = utils.sheet_to_json(workbook.Sheets[sheetName]);
       const articleData = sheet.find((row) => row.URL === articleSlug);
       setArticle(articleData);
     };

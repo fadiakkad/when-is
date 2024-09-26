@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /firebaseConfig.js/
+Disallow: /node_modules/

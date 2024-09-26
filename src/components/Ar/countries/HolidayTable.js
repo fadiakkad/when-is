@@ -5,6 +5,7 @@ import { Table, Button, Container } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import { blogTextStyle } from "../../common/constants";
 import { fetchCountryFlags } from "../../../helpers/readExcel";
+import GregorianToHijri from "../../common/GregorianToHijri";
 
 const HolidayTable = () => {
   const location = useLocation();
@@ -19,18 +20,20 @@ const HolidayTable = () => {
     // if (holidayData) {
     //   setHolidays(holidayData);
     // } else {
-      fetchCountryFlags()
-        .then((data) => {
-          const holidayEvents = data.combinedJsonData.filter(
+    fetchCountryFlags()
+      .then((data) => {
+        const holidayEvents = data.combinedJsonData
+          .filter(
             (item) =>
               item.isHoliday === true &&
               item.countryCode.toLowerCase() === countryCode
-          ).sort((a, b) => a.LastUpdated - b.LastUpdated);
-          setHolidays(holidayEvents);
-        })
-        .catch((error) => {
-          console.error("Error fetching holiday data:", error);
-        });
+          )
+          .sort((a, b) => a.LastUpdated - b.LastUpdated);
+        setHolidays(holidayEvents);
+      })
+      .catch((error) => {
+        console.error("Error fetching holiday data:", error);
+      });
     // }
   }, [countryCode]);
 
@@ -45,7 +48,9 @@ const HolidayTable = () => {
     }
     return "";
   };
-
+  const buttonStyle = {
+    float: "left",
+  };
   const convertExcelDate = (excelDate) => {
     if (typeof excelDate === "number") {
       const date = new Date(1900, 0, excelDate - 1);
@@ -60,6 +65,17 @@ const HolidayTable = () => {
 
   return (
     <Container className="rtl">
+      <Button
+        onClick={handlePrint}
+        style={{
+          ...blogTextStyle,
+          backgroundColor: "#1e81b0",
+          color: "white",
+          ...buttonStyle,
+        }}
+      >
+        اطبع الجدول
+      </Button>
       <h2 style={{ ...blogTextStyle, marginTop: "20px" }}>العطل القادمة:</h2>
       <Table
         striped
@@ -72,6 +88,7 @@ const HolidayTable = () => {
           <tr>
             <th style={blogTextStyle}>اسم الحدث</th>
             <th style={blogTextStyle}>التاريخ</th>
+            <th style={blogTextStyle}>التاريخ بالهجري</th>
             <th style={blogTextStyle}>كم باقي</th>
           </tr>
         </thead>
@@ -86,30 +103,24 @@ const HolidayTable = () => {
                   {convertExcelDate(holiday.LastUpdated)}
                 </td>
                 <td style={{ ...blogTextStyle, color: "black" }}>
+                  <GregorianToHijri
+                    date={convertExcelDate(holiday.LastUpdated)}
+                  />
+                </td>
+                <td style={{ ...blogTextStyle, color: "black" }}>
                   {calculateDaysLeft(holiday.LastUpdated)}
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="3" style={{ ...blogTextStyle, color: "black" }}>
+              <td colSpan="4" style={{ ...blogTextStyle, color: "black" }}>
                 لا يوجد عطل
               </td>
             </tr>
           )}
         </tbody>
       </Table>
-      <Button
-        onClick={handlePrint}
-        style={{
-          ...blogTextStyle,
-          backgroundColor: "#1e81b0",
-          marginTop: "20px",
-          color: "white",
-        }}
-      >
-        اطبع الجدول
-      </Button>
     </Container>
   );
 };

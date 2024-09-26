@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -10,6 +10,8 @@ import LatestArticles from "./LatestArticles";
 import { isMobile } from "react-device-detect";
 import UpcomingHolidays from "./UpcomingHolidays";
 import { blogTextStyle } from "./constants";
+
+const GregorianToHijri = lazy(() => import("../common/GregorianToHijri"));
 
 const SharedArticlePage = ({
   Title,
@@ -54,7 +56,7 @@ const SharedArticlePage = ({
           <br />
           TextBelowTitle
         </p>
-
+        <GregorianToHijri date={TargetDate} />
         {/* Last Updated */}
         <LastUpdate
           label="تاريخ اخر تحديث"
@@ -94,6 +96,7 @@ const SharedArticlePage = ({
     <br />
     <BodyAdsMobile />
     <hr />
+
     {/* Countdown Timer */}
     <CountdownTimer
       targetDate={TargetDate}

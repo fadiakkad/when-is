@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import * as XLSX from "xlsx";
+import { read, utils } from "xlsx";
 import { importAllImages } from "../../../helpers/importImages";
 import landingPageSheet from "../../../Excel/Data/General.xlsx";
 import { countries } from "../countries/CountriesNamesCodes";
@@ -29,9 +29,9 @@ function General() {
       try {
         const response = await fetch(landingPageSheet);
         const arrayBuffer = await response.arrayBuffer();
-        const workbook = XLSX.read(arrayBuffer, { type: "array" });
+        const workbook = read(arrayBuffer, { type: "array" });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(sheet);
+        const jsonData = utils.sheet_to_json(sheet);
 
         const parsedData = jsonData.map((row, index) => ({
           cardNumber: index + 1,
@@ -58,9 +58,9 @@ function General() {
         try {
           const response = await fetch(country.data);
           const arrayBuffer = await response.arrayBuffer();
-          const workbook = XLSX.read(arrayBuffer, { type: "array" });
+          const workbook = read(arrayBuffer, { type: "array" });
           const sheet = workbook.Sheets[workbook.SheetNames[0]];
-          const jsonData = XLSX.utils.sheet_to_json(sheet);
+          const jsonData = utils.sheet_to_json(sheet);
 
           jsonData.forEach((row) => {
             const parsedCountryData = {

@@ -49,6 +49,12 @@ function Header() {
               >
                 حول
               </Nav.Link>
+              <Nav.Link
+                href="/ar/create-countdown/"
+                style={{ ...linkStyle, ...blogTextStyle, color: "white" }}
+              >
+                أنشئ عد تنازلي
+              </Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>

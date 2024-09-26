@@ -29,6 +29,7 @@ const HolidayMessage = () => {
     xhr.onreadystatechange = function () {
       if (this.readyState === 4 && this.status === 200) {
         const response = JSON.parse(this.responseText);
+        console.log("response: ", response);
         if (response.status !== "success") {
           console.log("Query failed: " + response.message);
           return;
@@ -86,7 +87,7 @@ const HolidayMessage = () => {
           color: "white",
           boxShadow: "0 0 20px rgba(40, 78, 107, 0.5)",
           animation: "glow 1.5s infinite alternate",
-          width: isMobile ? "60%" : "auto",
+          width: isMobile ? "90%" : "auto",
         }}
         onMouseEnter={(event) => {
           event.target.style.backgroundColor = "#1e81b0";

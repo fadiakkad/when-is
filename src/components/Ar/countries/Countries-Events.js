@@ -1,6 +1,6 @@
 import React, { useState, useEffect, lazy } from "react";
 import { useParams } from "react-router-dom";
-import * as XLSX from "xlsx";
+import { read, utils } from "xlsx";
 import { importAllImages } from "../../../helpers/importImages";
 import { websiteURL, countriesURL, locale } from "../../common/constants";
 
@@ -24,9 +24,9 @@ const ArticlePage = () => {
           const response = await fetch(excelFile.default);
           const arrayBuffer = await response.arrayBuffer();
           const data = new Uint8Array(arrayBuffer);
-          const workbook = XLSX.read(data, { type: "array" });
+          const workbook = read(data, { type: "array" });
           const sheet = workbook.Sheets[workbook.SheetNames[0]];
-          jsonData = XLSX.utils.sheet_to_json(sheet);
+          jsonData = utils.sheet_to_json(sheet);
           const matchedRow = jsonData.find((row) => row.URL === url);
 
           if (matchedRow) {
