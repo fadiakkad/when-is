@@ -80,7 +80,6 @@ const LatestArticles = ({ data, sortBy }) => {
     fontWeight: "bold",
     color: "#1e81b0",
     textDecoration: "none",
-    marginBottom: "2px",
   };
 
   const buttonContainerStyle = {
@@ -104,8 +103,8 @@ const LatestArticles = ({ data, sortBy }) => {
           textAlign: "center",
           backgroundColor: "#1e81b0",
           color: "white",
-          paddingBottom: "10px",
-          paddingTop: "10px",
+          paddingBottom: "2px",
+          paddingTop: "2px",
         }}
       >
         {sortBy === "LastUpdated" ? "أحدث المقالات" : "مواعيد قريبة"}

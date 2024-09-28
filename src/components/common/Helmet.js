@@ -20,10 +20,7 @@ function SharedHelmet({ TITLE, DESCRIPTION, KEYWORDS, OG_URL, IMAGE }) {
         if (metaOG_URL) {
           metaOG_URL.setAttribute('content', OG_URL || '');
         }
-        const metaOG_DESCRIPTION = document.querySelector('meta[property="og:description"]');
-        if (metaOG_DESCRIPTION) {
-          metaOG_DESCRIPTION.setAttribute('content', DESCRIPTION || '');
-        }
+    
         const metaOG_Title = document.querySelector('meta[property="og:title"]');
         if (metaOG_Title) {
           metaOG_Title.setAttribute('content', TITLE || '');

@@ -54,7 +54,7 @@ const ArticlePage = () => {
     TextBelowTitle,
     CountDown,
     EventName,
-    Intro,
+    WhenIs,
     WhatIs,
     Importance,
     Preparation,
@@ -73,8 +73,8 @@ const ArticlePage = () => {
       TextBelowTitle={TextBelowTitle}
       CountDown={CountDown}
       EventName={EventName}
-      Intro={Intro}
       WhatIs={WhatIs}
+      WhenIs={WhenIs}
       Importance={Importance}
       Preparation={Preparation}
       Conclusion={Conclusion}

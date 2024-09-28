@@ -12,7 +12,7 @@ import UpcomingHolidays from "./UpcomingHolidays";
 import { blogTextStyle } from "./constants";
 
 const GregorianToHijri = lazy(() => import("../common/GregorianToHijri"));
-
+const DayName = lazy(() => import("../common/DayName"));
 const SharedArticlePage = ({
   Title,
   ImageURL,
@@ -20,7 +20,6 @@ const SharedArticlePage = ({
   TextBelowTitle,
   CountDown,
   EventName,
-  Intro,
   WhatIs,
   Importance,
   Preparation,
@@ -50,17 +49,15 @@ const SharedArticlePage = ({
         {/* Article Title */}
         <div style={blogTextStyle}>
           <h1 style={blogTextStyle}>{Title}</h1>
-          <p>Title</p>
         </div>
+        <br />
         <p style={{ ...blogTextStyle, color: "black" }}>
           {TextBelowTitle}
           <br />
-          TextBelowTitle
         </p>
-        <GregorianToHijri date={TargetDate} />
         {/* Last Updated */}
         <LastUpdate
-          label="تاريخ اخر تحديث"
+          label="تاريخ اخر تحديث: "
           isoDate={LastUpdated}
           locale={locale}
         />
@@ -94,7 +91,7 @@ const SharedArticlePage = ({
         <BodyAdsDesktop />
       </Col>
     </Row>
-    <br />
+
     <BodyAdsMobile />
     <hr />
 
@@ -121,26 +118,28 @@ const SharedArticlePage = ({
             محتويات المقال:
           </h3>
           <ul>
+
             <li>
-              <a href="#intro" style={blogTextStyle}>
-                المقدمة
+              <a href="#when-is" style={blogTextStyle}>
+                متى يبدأ  {EventName} ؟
               </a>
             </li>
             <li>
               <a href="#what-is" style={blogTextStyle}>
-                ما هو {Title}؟
+                ما هو {EventName}؟
               </a>
             </li>
             <li>
               <a href="#importance" style={blogTextStyle}>
-                لماذا يعتبر {Title} مهمًا؟
+                لماذا يعتبر {EventName} مهمًا؟
               </a>
             </li>
             <li>
               <a href="#preparation" style={blogTextStyle}>
-                التحضير لـ {Title}
+                التحضير لـ {EventName}
               </a>
             </li>
+
             <li>
               <a href="#conclusion" style={blogTextStyle}>
                 الخاتمة
@@ -150,30 +149,52 @@ const SharedArticlePage = ({
         </div>
         {/* Article Content */}
         <div style={{ textAlign: "right", marginTop: "20px" }}>
+          <br />
+          <hr />
+          <br />
           <h2
-            id="intro"
+            id="when-is"
             style={{ color: "#1e81b0", fontSize: "22px", ...blogTextStyle }}
           >
-            المقدمة
+            متى يبدأ {EventName}؟
           </h2>
-          <p
+          <div
             style={{
+              display: "flex",
+              alignItems: "center", // Aligns vertically in the center
+              flexWrap: "wrap", // Allows wrapping if the container gets too small
               fontSize: "18px",
               lineHeight: "1.8",
               ...blogTextStyle,
               color: "black",
             }}
           >
-            {Intro}
-          </p>
+            <span style={{ marginLeft: "5px" }}>من المتوقع أن يبدأ موعد {EventName} في</span>
+            <span style={{ marginLeft: "5px" }}>
+              {new Date(TargetDate).toISOString().split("T")[0].replace(/-/g, "/")}
+            </span>
+            <span style={{ marginLeft: "5px" }}>ميلادي ويوافق</span>
+            <span style={{ marginLeft: "5px" }}>
+              <GregorianToHijri date={TargetDate} />
+            </span>
+            <span style={{ marginLeft: "5px" }}>في التقويم الهجري</span>
+            <span style={{ marginLeft: "5px" }}>والذي يُصادف يوم
+            </span>
+            <span style={{ marginLeft: "5px" }}>
+              <DayName dateString={TargetDate} />.
+            </span>
+
+          </div>
+
           <br />
+
           <hr />
           <br />
           <h2
             id="what-is"
             style={{ color: "#1e81b0", fontSize: "22px", ...blogTextStyle }}
           >
-            ما هو {Title}؟
+            ما هو {EventName}؟
           </h2>
           <p
             style={{
@@ -192,7 +213,7 @@ const SharedArticlePage = ({
             id="importance"
             style={{ color: "#1e81b0", fontSize: "22px", ...blogTextStyle }}
           >
-            لماذا يعتبر {Title} مهمًا؟
+            لماذا يعتبر {EventName} مهمًا؟
           </h2>
           <p
             style={{
@@ -211,7 +232,7 @@ const SharedArticlePage = ({
             id="preparation"
             style={{ color: "#1e81b0", fontSize: "22px", ...blogTextStyle }}
           >
-            التحضير لـ {Title}
+            التحضير لـ {EventName}
           </h2>
           <p
             style={{
@@ -243,6 +264,7 @@ const SharedArticlePage = ({
             {Conclusion}
           </p>
         </div>
+        <hr />
       </Col>
       <Col xs={12} lg={3}>
         <br />
@@ -253,6 +275,7 @@ const SharedArticlePage = ({
         />
         <br />
         <br />
+
         <br />
         {countryCode === undefined ? (
           ""

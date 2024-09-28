@@ -1,82 +1,37 @@
 <!DOCTYPE html>
 <html lang="ar">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="موقع 'موعد' هو مصدرك الموثوق لمعرفة الأحداث والمناسبات الهامة في العالم العربي. سواء كنت تبحث عن مواعيد الأعياد، أو معرفة كم باقٍ على بداية موسم الحج، أو حتى معرفة أخبار التكنولوجيا والصحة، فإننا نقدم محتوى متنوع ومفيد. تفضل بزيارتنا واستمتع بالمعلومات الشيقة والمحدثة بانتظام."
-    />
-    <meta
-      name="keywords"
-      content="موعد، مقال، رمضان، مدارس، عيد، عيد الفطر، عيد الأضحى، الوقت المتبقي"
-    />
 
-    <meta property="og:site_name" content="موعد" />
-    <meta
-      property="og:description"
-      content="موقع 'موعد' هو مصدرك الموثوق لمعرفة الأحداث والمناسبات الهامة في العالم العربي. سواء كنت تبحث عن مواعيد الأعياد، أو معرفة كم باقٍ على بداية موسم الحج، أو حتى معرفة أخبار التكنولوجيا والصحة، فإننا نقدم محتوى متنوع ومفيد. تفضل بزيارتنا واستمتع بالمعلومات الشيقة والمحدثة بانتظام."
-    />
-    <meta property="og:type" content="website" />
-    <!-- <meta property="og:url" content="https://do-calculate.com/"> -->
-    <meta property="og:title" content="موعد" />
-    <!-- <meta property="og:image" content="https://do-calculate.com/logo512.png"> -->
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description"
+    content="موقع 'موعد' هو مصدرك الموثوق لمعرفة الأحداث والمناسبات الهامة في العالم العربي. سواء كنت تبحث عن مواعيد الأعياد، أو معرفة كم باقٍ على بداية موسم الحج، أو حتى معرفة أخبار التكنولوجيا والصحة، فإننا نقدم محتوى متنوع ومفيد. تفضل بزيارتنا واستمتع بالمعلومات الشيقة والمحدثة بانتظام." />
+  <meta name="keywords" content="موعد، مقال، رمضان، مدارس، عيد، عيد الفطر، عيد الأضحى، الوقت المتبقي" />
 
-    <title>موعد</title>
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <meta property="og:site_name" content="موعد" />
+  <meta property="og:description"
+    content="موقع 'موعد' هو مصدرك الموثوق لمعرفة الأحداث والمناسبات الهامة في العالم العربي. سواء كنت تبحث عن مواعيد الأعياد، أو معرفة كم باقٍ على بداية موسم الحج، أو حتى معرفة أخبار التكنولوجيا والصحة، فإننا نقدم محتوى متنوع ومفيد. تفضل بزيارتنا واستمتع بالمعلومات الشيقة والمحدثة بانتظام." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="موعد" />
 
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+  <title>موعد</title>
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
 
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!-- Link Critical CSS Externally -->
-    <link rel="stylesheet" href="%PUBLIC_URL%/criticalStyle.css" />
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
 
-    <!-- Link Non-Critical CSS Asynchronously -->
-    <link
-      rel="preload"
-      href="%PUBLIC_URL%/non-criticalStyle.css"
-      as="style"
-      onload="this.onload=null;this.rel='stylesheet'"
-    />
-    <noscript>
-      <link rel="stylesheet" href="%PUBLIC_URL%/non-criticalStyle.css" />
-    </noscript>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@100..900&display=swap"
-      rel="stylesheet"
-    />
-    <!-- <link rel="canonical" href="https://do-calculate.com/"> -->
-    <!-- <link rel='preconnect' href='//www.google-analytics.com' /> -->
-  </head>
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <!-- Link Critical CSS Externally -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/criticalStyle.css" />
 
-  <body>
-    <div id="root"></div>
 
-    <!-- <script>
-    window.addEventListener('load', function () {
-      var is_adsense_load = 0
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@100..900&display=swap" rel="stylesheet" />
+</head>
 
-      window.addEventListener('scroll', function () {
-        if (is_adsense_load == 0) {
-          is_adsense_load = 1;
+<body>
+  <div id="root"></div>
+</body>
 
-          var ele = document.createElement('script');
-          ele.async = true;
-          ele.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
-          ele.setAttribute('crossorigin', 'anonymous')
-          var sc = document.getElementsByTagName('script')[0]
-          sc.parentNode.insertBefore(ele, sc);
-
-          (adsbygoogle = window.adsbygoogle || []).push({
-            google_ad_client: "ca-pub-7107245842042491",
-            enable_page_level_ads: true
-          });
-        }
-      })
-    })
-  </script> -->
-  </body>
 </html>

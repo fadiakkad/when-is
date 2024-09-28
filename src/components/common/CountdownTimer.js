@@ -18,6 +18,7 @@ const CountdownTimer = ({ targetDate, CountDown, EventName, shareUrl }) => {
     if (difference > 0) {
       timeLeft = {
         totalDays: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        totalWeeks: Math.floor(difference / (1000 * 60 * 60 * 24 * 7)),
         totalHours: Math.floor(difference / (1000 * 60 * 60)),
         months: Math.floor(difference / (1000 * 60 * 60 * 24 * 30)),
         days: Math.floor((difference / (1000 * 60 * 60 * 24)) % 30),
@@ -222,6 +223,15 @@ const CountdownTimer = ({ targetDate, CountDown, EventName, shareUrl }) => {
                   {Math.floor(timeLeft.months)} أشهر
                 </td>
               </tr>
+              <tr>
+                <td style={{ ...blogTextStyle, color: "black" }}>
+                  {`باقي على ${EventName} بالأسابيع:`}
+                </td>
+                <td style={{ ...blogTextStyle, color: "black" }}>
+                  {Math.floor(timeLeft.totalWeeks)} أسابيع
+                </td>
+              </tr>
+
               <tr>
                 <td style={{ ...blogTextStyle, color: "black" }}>
                   {`باقي على ${EventName} بالأيام:`}
