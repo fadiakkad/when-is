@@ -9,7 +9,7 @@ import { importAllImages } from "../../helpers/importImages.js";
 import { countries } from "./countries/CountriesNamesCodes.js";
 import { LoadingSpinner } from "../common/LoadingSpinner.js";
 import { SearchBar } from "../common/SearchBar.js";
-import { blogTextStyle, generalURL, locale } from "../common/constants.js";
+import { blogTextStyle, generalURL, locale,limitedCardsLandingPage } from "../common/constants.js";
 import HolidayMessage from "../common/HolidayMessage.js";
 
 const CountryFlagsSection = lazy(() =>
@@ -92,7 +92,7 @@ function LandingPage() {
     .filter((card) => card.cardTitle)
     .sort((a, b) => a.date - b.date);
 
-  const limitedCards = filteredCards.slice(0, 6);
+  const limitedCards = filteredCards.slice(0, limitedCardsLandingPage);
   const hasResults = limitedCards.length > 0;
 
   return (

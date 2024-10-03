@@ -20,3 +20,4 @@ export const adminEmails = ["taiseertello@gmail.com", "docalculate@gmail.com"];
 export const titleMaxLength = 65;
 export const descriptionMaxLength = 200;
 export const countdowns_per_day = 2;
+export const limitedCardsLandingPage= 8;
