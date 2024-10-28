@@ -3,16 +3,13 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDNo-K-WSNogHIU9O6yf3buv1Bcn-G5hLU",
-  authDomain: "personal-countdown.firebaseapp.com",
-  projectId: "personal-countdown",
-  storageBucket: "personal-countdown.appspot.com",
-  messagingSenderId: "1083256333530",
-  appId: "1:1083256333530:web:c29ea2b8d14d1f6036b1e3",
-};
+  apiKey: "AIzaSyAxy3ozCWDd8Fj9pdU8XWRXL1SmXfYT8vE",
+  authDomain: "maw3eed.firebaseapp.com",
+  projectId: "maw3eed",
+  storageBucket: "maw3eed.appspot.com",
+  messagingSenderId: "768985418800",
+  appId: "1:768985418800:web:b123c99a3bb6b2835cb1f5"};
 const app = initializeApp(firebaseConfig);
-
 const db = getFirestore(app);
 const auth = getAuth(app);
-
 export { db, auth };

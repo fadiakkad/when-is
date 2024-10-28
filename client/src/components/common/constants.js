@@ -1,9 +1,10 @@
-export const websiteURL = "https://when-is.com";
+export const websiteURL = "https://maw3eed.com";
+export const websiteDomain = "maw3eed.com";
 export const countriesURL = "countries";
-export const holidaysURL = "holidays";
-export const generalURL = "general";
+export const holidaysURL = "العطل_القادمة";
+export const generalURL = "مناسبات_عامة";
 export const countdownURL = "countdown";
-export const createCountdownURL = "create-countdown";
+export const createCountdownURL = "انشاء_عد_تنازلي";
 export const locale = "ar";
 export const admin = "admin";
 export const collectionName = "countdowns";
@@ -16,7 +17,7 @@ export const blogTextStyle = {
   fontVariationSettings: '"wdth" 100',
   color: "#18678d",
 };
-export const adminEmails = ["taiseertello@gmail.com", "docalculate@gmail.com"];
+export const adminEmails = ["docalculate@gmail.com"];
 export const titleMaxLength = 65;
 export const descriptionMaxLength = 200;
 export const countdowns_per_day = 2;

@@ -1,7 +1,7 @@
 import { getColorByTargetDate } from "./AdminPanel";
 import { countryNames } from "../Ar/countries/CountriesNamesCodes.js";
 import { format } from "date-fns";
-import { blogTextStyle, locale, countriesURL } from "../common/constants";
+import { blogTextStyle } from "../common/constants";
 import { styles } from "./styles";
 import { Table } from "react-bootstrap";
 
@@ -56,7 +56,7 @@ export const renderCountriesTable = (filteredData) => {
             </td>
             <td style={{ ...styles.td, ...blogTextStyle, color: "black" }}>
               <a
-                href={`/${locale}/${countriesURL}/${article.countryCode}/${article.URL}`}
+                href={`/${article.countryCode}/${article.URL}`}
                 style={{ ...blogTextStyle }}
               >
                 {article.Title}

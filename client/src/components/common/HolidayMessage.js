@@ -6,32 +6,15 @@ import { isMobile } from "react-device-detect";
 const HolidayMessage = () => {
   const [userCountry, setUserCountry] = useState(null);
 
-  // useEffect(() => {
-  //   const styleSheet = document.styleSheets[0];
-  //   const keyframes = `
-  //     @keyframes glow {
-  //       0% {
-  //         box-shadow: 0 0 10px rgba(40, 78, 107, 0.5), 0 0 20px rgba(40, 78, 107, 0.3);
-  //       }
-  //       100% {
-  //         box-shadow: 0 0 20px rgba(40, 78, 107, 0.9), 0 0 30px rgba(40, 78, 107, 0.6);
-  //       }
-  //     }
-  //   `;
-  //   styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
-  // }, []);
 
   useEffect(() => {
-    const endpoint =
-      "http://ip-api.com/json/?fields=status,message,countryCode,query";
+    const endpoint = "https://freeipapi.com/api/json/";
 
     const xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
       if (this.readyState === 4 && this.status === 200) {
         const response = JSON.parse(this.responseText);
-        console.log("response: ", response);
-        if (response.status !== "success") {
-          console.log("Query failed: " + response.message);
+        if (response.error) {
           return;
         }
 
@@ -43,21 +26,9 @@ const HolidayMessage = () => {
       }
     };
     xhr.open("GET", endpoint, true);
-    console.log("xhr: ", xhr);
     xhr.send();
   }, []);
 
-  // TEST API
-  // useEffect(() => {
-  //   const mockResponse = {
-  //     status: "success",
-  //     countryCode: "SY",
-  //   };
-  //   const countryCode = mockResponse.countryCode.toLowerCase();
-  //   if (countryNames[countryCode]) {
-  //     setUserCountry(countryCode);
-  //   }
-  // }, []);
 
   if (!userCountry) {
     return null;
@@ -65,7 +36,7 @@ const HolidayMessage = () => {
 
   return (
     <a
-      href={`/ar/${userCountry}/${holidaysURL}/`}
+      href={`/${userCountry}/${holidaysURL}/`}
       style={{
         ...blogTextStyle,
         textDecoration: "none",

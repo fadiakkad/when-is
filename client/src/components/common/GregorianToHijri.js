@@ -11,7 +11,16 @@ const GregorianToHijri = ({ date }) => {
 
   return (
     <div>
-      <p style={{ ...blogTextStyle, color: "black" }}>{hijriDate}</p>
+      {isValidDate ? (
+        <time
+          style={{ ...blogTextStyle, color: "black" }}
+          dateTime={new Date(date).toISOString()}
+        >
+          {hijriDate}
+        </time>
+      ) : (
+        <p style={{ ...blogTextStyle, color: "black" }}>{hijriDate}</p>
+      )}
     </div>
   );
 };

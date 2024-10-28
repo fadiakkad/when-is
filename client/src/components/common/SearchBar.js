@@ -8,7 +8,7 @@ export const SearchBar = ({ searchTerm, setSearchTerm }) => {
   const navigate = useNavigate();
 
   const handleSearch = () => {
-    navigate("/ar/search-results", { state: { searchTerm } });
+    navigate("/search-results/", { state: { searchTerm } });
   };
 
   function handleKeyDown(event) {
@@ -18,7 +18,7 @@ export const SearchBar = ({ searchTerm, setSearchTerm }) => {
   }
 
   return (
-    <div className="container my-4" dir="ltr">
+    <div className="container my-4" >
       <div
         className="row"
         style={{
@@ -40,6 +40,7 @@ export const SearchBar = ({ searchTerm, setSearchTerm }) => {
             borderRadius: "25px",
             overflow: "hidden",
             border: "1px solid #18678d",
+     
           }}
         >
           {/* Search Button */}

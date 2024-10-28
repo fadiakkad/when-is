@@ -1,13 +1,10 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
-import Flag from "react-flagkit";
 import {
   blogTextStyle,
-  countriesURL,
-  locale,
 } from "../components/common/constants";
-
+import LazyLoadFlag from "./LazyLoadFlag";
 function CountryFlagsSection({ countryFlags }) {
   return (
     <>
@@ -28,7 +25,7 @@ function CountryFlagsSection({ countryFlags }) {
         {countryFlags.map((country, index) => (
           <a
             key={index}
-            href={`/${locale}/${countriesURL}/${country.url}/`}
+            href={`/countries/${country.url}/جميع_المناسبات/`}
             style={{ textDecoration: "none" }}
           >
             <Card
@@ -56,7 +53,7 @@ function CountryFlagsSection({ countryFlags }) {
                   border: "2px",
                 }}
               >
-                <Flag country={country.countryCode.toUpperCase()} size={48} />
+                <LazyLoadFlag countryCode={country.countryCode.toUpperCase()} />
               </div>
               <Card.Body>
                 <Card.Title

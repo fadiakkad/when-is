@@ -36,7 +36,7 @@ function Footer() {
           }}
         >
           <a
-            href="/about"
+            href="/عن_مواعيد/"
             style={{
               textDecoration: "none",
               fontSize: "18px",
@@ -55,7 +55,7 @@ function Footer() {
             حول
           </a>
           <a
-            href="/contact"
+            href="/اتصل_بنا/"
             style={{
               textDecoration: "none",
               fontSize: "18px",
@@ -73,6 +73,25 @@ function Footer() {
           >
             اتصل بنا
           </a>
+          <a
+            href="/الخصوصية/"
+            style={{
+              textDecoration: "none",
+              fontSize: "18px",
+              margin: "0 15px",
+              transition: "color 0.3s ease",
+              ...blogTextStyle,
+              color: "white",
+            }}
+            onMouseEnter={(event) => {
+              event.target.style.color = "#d2e6ef";
+            }}
+            onMouseLeave={(event) => {
+              event.target.style.color = "white";
+            }}
+          >
+الخصوصية
+          </a>
         </div>
       </div>
 
@@ -85,7 +104,7 @@ function Footer() {
           color: "white",
         }}
       >
-        جميع الحقوق محفوظة &copy; موعد {new Date().getFullYear()}
+        جميع الحقوق محفوظة &copy; مواعيد {new Date().getFullYear()}
       </p>
     </footer>
   );

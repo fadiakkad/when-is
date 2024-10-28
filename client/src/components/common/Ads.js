@@ -30,17 +30,19 @@ const AdComponent = ({ adSlot }) => {
 
 export const TopAdsDesktop = () => (
   !isMobile ? (
-    <div style={{ height: '200px', backgroundColor: 'yellow' }}>
+    // <div style={{ height: '200px'}}>
+    <div >
       {/* <AdComponent adSlot={HomePageUpperCenterAds_Id} /> */}
-      desktop ads
+      {/* desktop ads */}
     </div>
   ) : null
 );
 export const BodyAdsMobile = () => (
   isMobile ? (
-    <div style={{ height: '280px', backgroundColor: 'yellow' }}>
+    // <div style={{ height: '280px'}}>
+    <div >
       {/* <AdComponent adSlot={HomePageUpperCenterAds_Id} /> */}
-      mobile body ads
+      {/* mobile body ads */}
     </div>
   ) : null
 );
@@ -48,18 +50,20 @@ export const BodyAdsMobile = () => (
 
 export const GeneralCountryListAdsDesktop = () => (
   !isMobile ? (
-    <div style={{ height: '250px', backgroundColor: 'yellow' }}>
+    // <div style={{ height: '250px'}}>
+    <div >
       {/* <AdComponent adSlot={HomePageUpperCenterAds_Id} /> */}
-      general list body desktop ads
+      {/* general list body desktop ads */}
     </div>
   ) : null
 );
 
 export const GeneralCountryListAdsMobile = () => (
   isMobile ? (
-    <div style={{ height: '280px', backgroundColor: 'yellow' }}>
+    // <div style={{ height: '280px' }}>
+    <div >
       {/* <AdComponent adSlot={HomePageUpperCenterAds_Id} /> */}
-      general list body mobile ads
+      {/* general list body mobile ads */}
     </div>
   ) : null
 );
@@ -67,23 +71,27 @@ export const GeneralCountryListAdsMobile = () => (
 
 export const BodyAdsDesktop = () => (
   !isMobile ? (
-    <div style={{ height: '292px', backgroundColor: 'yellow' }}>
+    // <div style={{ height: '292px' }}>
+    <div >
       {/* <AdComponent adSlot={HomePageUpperCenterAds_Id} /> */}
-      body desktop ads
+      {/* body desktop ads */}
     </div>
   ) : null
 );
 
 export const FirstAds = () => (
   !isMobile ? (
-    <div style={{ height: '280px', backgroundColor: 'white' }}>
-      <AdComponent adSlot={HomePageUpperCenterAds_Id} />
+    // <div style={{ height: '280px', backgroundColor: 'white' }}>
+    <div >
+      {/* <AdComponent adSlot={HomePageUpperCenterAds_Id} /> */}
     </div>
   ) : null
 );
 
 export const SecondAds = () => (
-  <div style={{ height: '280px', backgroundColor: 'white' }}>
-    <AdComponent adSlot={UpperLeftCentre_Id} />
+  // <div style={{ height: '280px', backgroundColor: 'white' }}>
+  <div >
+    {/* <AdComponent adSlot={UpperLeftCentre_Id} /> */}
   </div>
 );
+

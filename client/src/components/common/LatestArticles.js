@@ -3,25 +3,18 @@ import { parseISO, differenceInDays } from "date-fns";
 import { importAllImages } from "../../helpers/importImages";
 import {
   blogTextStyle,
-  countriesURL,
   generalURL,
-  locale,
   numOfSlicesArticles,
 } from "./constants";
 
 const LatestArticles = ({ data, sortBy }) => {
   const [sortedArticles, setSortedArticles] = useState([]);
-  // eslint-disable-next-line no-unused-vars
   const [showAll, setShowAll] = useState(false);
   const images = importAllImages(
     require.context("../../images", false, /\.(png|jpe?g|webp)$/)
   );
   useEffect(() => {
     if (data && Array.isArray(data)) {
-      // const filteredHolidays = data.filter(
-      //   (holiday) => holiday.isHoliday === false
-      // );
-      // const sortedData = [...filteredHolidays].sort((a, b) => {
       const sortedData = [...data].sort((a, b) => {
         const today = new Date();
         const dateA = parseISO(formatDate(a[sortBy]));
@@ -79,6 +72,11 @@ const LatestArticles = ({ data, sortBy }) => {
     fontWeight: "bold",
     color: "#18678d",
     textDecoration: "none",
+    padding: "10px",
+    display: "block", 
+    borderRadius: "5px", 
+    margin: "5px 0", 
+    textAlign: "center",
   };
 
   const buttonContainerStyle = {
@@ -115,26 +113,28 @@ const LatestArticles = ({ data, sortBy }) => {
               <a
                 href={
                   article.countryCode
-                    ? `/${locale}/${countriesURL}/${article.countryCode.toLowerCase()}/${
+                    ? `/countries/${article.countryCode.toLowerCase()}/${
                         article.URL
-                      }`
-                    : `/${locale}/${generalURL}/${article.URL || article.url}`
+                      }/`
+                    : `/${article.URL || article.url}/`
                 }
-                // style={{ ...blogTextStyle, textDecoration: "none" }}
               >
                 <img
                   src={images[article.ImageURL] || article.cardImg}
-                  alt={article.Title}
+                  alt= {article.Title || article.cardTitle}
                   style={imageStyle}
+                  loading="lazy"
+                  width="85px"
+                  height="55px"
                 />
               </a>
               <a
                 href={
                   article.countryCode
-                    ? `/${locale}/${countriesURL}/${article.countryCode.toLowerCase()}/${
+                    ? `/countries/${article.countryCode.toLowerCase()}/${
                         article.URL
-                      }`
-                    : `/${locale}/${generalURL}/${article.URL || article.url}`
+                      }/`
+                    : `/${article.URL || article.url}/`
                 }
                 style={{ ...titleStyle, ...blogTextStyle }}
               >
@@ -151,10 +151,10 @@ const LatestArticles = ({ data, sortBy }) => {
           <a
             href={
               sortedArticles.some((article) => article.countryCode)
-                ? `/${locale}/${countriesURL}/${sortedArticles
+                ? `/countries/${sortedArticles
                     .find((article) => article.countryCode)
-                    .countryCode.toLowerCase()}/`
-                : `/${locale}/${generalURL}/`
+                    .countryCode.toLowerCase()}/جميع_المناسبات/`
+                : `/${generalURL}/`
             }
           >
             <button
@@ -175,7 +175,7 @@ const LatestArticles = ({ data, sortBy }) => {
           </a>
         </div>
       )}
-      <br />
+     
     </div>
   );
 };

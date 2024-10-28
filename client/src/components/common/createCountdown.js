@@ -8,12 +8,12 @@ import {
   countdownURL,
   createCountdownURL,
   descriptionMaxLength,
-  locale,
   titleMaxLength,
 } from "./constants";
 import Swal from "sweetalert2";
 import SharedHelmet from "./Helmet";
-
+import { websiteURL } from "./constants";
+import logoImage from "../../images/logo.jpg";
 const CreateCountdown = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -22,23 +22,6 @@ const CreateCountdown = () => {
 
   const today = new Date().toISOString().split("T")[0];
 
-  // const checkVPN = async () => {
-  //   try {
-  //     const endpoint =
-  //       "http://ip-api.com/json/?fields=status,message,countryCode,query,proxy,timezone";
-  //     const response = await fetch(endpoint);
-  //     const data = await response.json();
-  //     if (data.status !== "success") {
-  //       console.log("Query failed: " + data.message);
-  //       return false;
-  //     }
-
-  //     return data.proxy === true;
-  //   } catch (error) {
-  //     console.error("Error checking VPN:", error);
-  //     return false;
-  //   }
-  // };
 
   const setCountdownLimit = async (reset = false) => {
     const response = await fetch("https://api64.ipify.org?format=json");
@@ -88,17 +71,7 @@ const CreateCountdown = () => {
       : null;
     let hoursPassed = timeDifference ? timeDifference / (1000 * 60 * 60) : null;
 
-    // const isUsingVPN = await checkVPN();
-    // if (isUsingVPN) {
-    //   Swal.fire({
-    //     title: "لإنشاء عد تنازلي لا يمكنك استعمال VPN",
-    //     text: "يرجى تعطيله والمحاولة مجدداً",
-    //     icon: "error",
-    //     confirmButtonText: "حسناً",
-    //     confirmButtonColor: "#d9534f",
-    //   });
-    //   return;
-    // }
+
     if (!storedData || hoursPassed >= 24) {
       setCountdownLimit(true);
     }
@@ -156,7 +129,7 @@ const CreateCountdown = () => {
             title,
             description,
             date: countdownDateTime,
-            isAccepted: false,
+            isAccepted: true,
             createdAt: new Date(),
           });
           const countdownId = docRef.id;
@@ -171,7 +144,7 @@ const CreateCountdown = () => {
             );
           }
           setCountdownLimit();
-          const countdown = `/${locale}/${countdownURL}/${countdownId}`;
+          const countdown = `/${countdownURL}/${countdownId}`;
           Swal.fire({
             title: "تم إنشاء العد التنازلي الخاص بك",
             icon: "success",
@@ -222,22 +195,72 @@ const CreateCountdown = () => {
       console.error("Error adding countdown: ", error);
     }
   };
-
+  const TITLE = "إنشاء عد تنازلي لمناسباتك الخاصة بسهولة - عد تنازلي مجاني وفوري";
+  const DESCRIPTION = "أنشئ عد تنازلي خاص بك لأهم مناسباتك بسهولة تامة. سواء كان عيد ميلاد، حفل زفاف، حدث رياضي، أو أي مناسبة هامة أخرى، يمكنك إنشاء عد تنازلي مجاني ومشاركته مع أصدقائك وعائلتك لزيادة الحماس! احسب الأيام، الساعات والدقائق المتبقية لأي مناسبة قادمة.";
+  const KEYWORDS = "إنشاء عد تنازلي, عد تنازلي مجاني, عد تنازلي للمناسبات, حساب الوقت, حدث رياضي, عيد ميلاد, زفاف, حدث هام, ساعة عد تنازلي, مؤقت زمني, عد تنازلي للحفلات, مشاركات العد التنازلي, حساب وقت المناسبات";
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": TITLE,
+    "description": DESCRIPTION,
+    "startDate": `${date}T${hour}:00`,
+    "eventStatus": "https://schema.org/EventScheduled",
+    "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+    "organizer": {
+      "@type": "Organization",
+      "name": "مواعيد",
+      "url": websiteURL
+    },
+    "url": `${websiteURL}/${createCountdownURL}/`
+  };
+  const OG_URL = `${websiteURL}/${createCountdownURL}/`
   return (
     <>
       <SharedHelmet
-        TITLE={title}
-        DESCRIPTION={description}
-        KEYWORDS={description}
-        OG_URL={`/${locale}/${createCountdownURL}/`}
+        TITLE={TITLE}
+        DESCRIPTION={DESCRIPTION}
+        KEYWORDS={KEYWORDS}
+        OG_URL={OG_URL}
+        structuredData={structuredData}
+        IMAGE={logoImage}
       />
+
       <div
         style={{ padding: "20px", maxWidth: "600px", margin: "0 auto" }}
         dir="rtl"
       >
-        <h2 style={{ textAlign: "center", color: "#18678d", ...blogTextStyle }}>
-          إنشاء العد التنازلي الخاص بك!
-        </h2>
+          <h1
+  style={{
+    backgroundColor: '#65bee7',
+    color: '#ffffff',
+    height: '80px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '1.5rem',  // Reduced base font size
+    fontWeight: 'bold',
+    textAlign: 'center',
+    textShadow: '1px 1px 4px rgba(0, 0, 0, 0.2)',
+    padding: '0 10px',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+    backgroundImage: 'linear-gradient(to right, #65bee7, #4ca3d3)',
+    width: '100%',
+    maxWidth: '800px',  // Limits width on larger screens
+    margin: '0 auto',
+    // Media query for smaller screens
+    '@media (max-width: 480px)': {
+      fontSize: '1.2rem',
+      height: '60px',
+      padding: '0 5px',
+    }
+  }}
+  className="text-white"
+>
+إنشاء عد تنازلي
+</h1>
+<br/>
+
         <form
           onSubmit={handleSubmit}
           style={{ display: "flex", flexDirection: "column", gap: "10px" }}

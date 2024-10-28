@@ -1,6 +1,6 @@
 import { Table } from "react-bootstrap";
 import { styles } from "./styles";
-import { blogTextStyle, generalURL, locale } from "../common/constants";
+import { blogTextStyle, generalURL } from "../common/constants";
 import { format } from "date-fns";
 import { getColorByTargetDate } from "./AdminPanel";
 
@@ -41,7 +41,7 @@ export const renderGeneralTable = (generalData) => {
             </td>
             <td style={{ ...styles.td, ...blogTextStyle, color: "black" }}>
               <a
-                href={`/${locale}/${generalURL}/${article.URL}`}
+                href={`/${generalURL}/${article.URL}`}
                 style={{ ...blogTextStyle }}
               >
                 {article.Title}

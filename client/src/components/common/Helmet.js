@@ -1,63 +1,66 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { websiteURL } from "./constants";
 function SharedHelmet({
   TITLE,
   DESCRIPTION,
   KEYWORDS,
   OG_URL,
   IMAGE,
+  IMAGES_PRELOAD = [],
   COUNTRY_CODE,
+  structuredData,
+  isNotIndexed,
+  taxonomyTerms, 
+  contentType,
+  pageTitle,
+  articleSlug,
+  where   
 }) {
   if (!OG_URL.endsWith("/")) {
-    OG_URL += "/"; // Add '/' if it does not end with '/'
+    OG_URL += "/"; 
   }
-  IMAGE = IMAGE ? "" + IMAGE : null;
+  const MAIN_IMAGES_PRELOAD = IMAGE
+  IMAGE = IMAGE ? "" + `${websiteURL}${IMAGE}` : null;
+
+  const langAttribute = COUNTRY_CODE ? `ar-${COUNTRY_CODE}` : "ar";
+
   return (
     <HelmetProvider>
-      <Helmet
-        onChangeClientState={(newState) => {
-          const metaDescription = document.querySelector(
-            'meta[name="description"]'
-          );
-          if (metaDescription) {
-            metaDescription.setAttribute("content", DESCRIPTION || "");
-          }
-          const metaKeywords = document.querySelector('meta[name="keywords"]');
-          if (metaKeywords) {
-            metaKeywords.setAttribute("content", KEYWORDS || "");
-          }
-          const metaOG_URL = document.querySelector('meta[property="og:url"]');
-          if (metaOG_URL) {
-            metaOG_URL.setAttribute("content", OG_URL || "");
-          }
-
-          const metaOG_Title = document.querySelector(
-            'meta[property="og:title"]'
-          );
-          if (metaOG_Title) {
-            metaOG_Title.setAttribute("content", TITLE || "");
-          }
-          const metaOG_CountryCode = document.querySelector(
-            'meta[property="og:countryCode"]'
-          );
-          if (metaOG_CountryCode) {
-            metaOG_CountryCode.setAttribute("content", COUNTRY_CODE || "");
-          }
-          const metaOG_Image = document.querySelector(
-            'meta[property="og:image"]'
-          );
-          if (metaOG_Image && IMAGE) {
-            metaOG_Image.setAttribute("content", IMAGE || "");
-          }
-          const CANONICAL_URL = document.querySelector('link[rel="canonical"]');
-          if (CANONICAL_URL) {
-            CANONICAL_URL.setAttribute("href", OG_URL || "");
-          }
-        }}
-      >
+      <Helmet>
+        <html lang={langAttribute} dir="rtl" />
         <title>{TITLE}</title>
-        {IMAGE && <link rel="preload" href={IMAGE} as="image" />}
+        {MAIN_IMAGES_PRELOAD && <link rel="preload" href={MAIN_IMAGES_PRELOAD} as="image" />}
+        {IMAGES_PRELOAD.map((image, index) => (
+          <link key={index} rel="preload" href={image} as="image" />
+        ))}
+        <meta name="description" content={DESCRIPTION || ""} />
+        <meta property="og:description" content={DESCRIPTION || ""} />
+        <meta name="keywords" content={KEYWORDS || ""} />
+        <meta property="og:url" content={OG_URL || ""} />
+        <meta property="og:title" content={TITLE || ""} />
+        {IMAGE && <meta property="og:image" content={IMAGE || ""} />}
+
+        <link rel="canonical" href={OG_URL || ""} />
+
+        <meta name="twitter:title" content={TITLE} />
+        <meta name="twitter:description" content={DESCRIPTION || ""} />
+        {IMAGE && <meta name="twitter:image" content={IMAGE || ""} />}
+
+        {taxonomyTerms && <meta name="taxonomyTerms" content={taxonomyTerms} />}
+        {contentType && <meta name="contentType" content={contentType} />}
+        {pageTitle && <meta name="pageTitle" content={pageTitle} />}
+        {articleSlug && <meta name="articleSlug" content={articleSlug} />}
+        {where && <meta name="where" content={where} />}
+
+        {structuredData && (
+          <script type="application/ld+json">
+            {JSON.stringify(structuredData)}
+          </script>
+        )}
+        {isNotIndexed && <meta name="robots" content="noindex, nofollow" />}
       </Helmet>
     </HelmetProvider>
+
   );
 }
 export default SharedHelmet;

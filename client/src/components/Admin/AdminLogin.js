@@ -21,7 +21,7 @@ const AdminLogin = () => {
 
   return (
     <div style={styles.loginContainer}>
-      <h2 style={styles.title}>Admin Login</h2>
+      <h1 style={styles.title}>Admin Login</h1>
       {error && <p style={styles.error}>{error}</p>}
       <form onSubmit={handleLogin} style={styles.form}>
         <div style={styles.formGroup}>

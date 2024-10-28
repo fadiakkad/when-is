@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef, Suspense, lazy } from "react";
 import { Table } from "react-bootstrap";
-import { blogTextStyle, createCountdownURL, locale } from "./constants";
+import { blogTextStyle, createCountdownURL } from "./constants";
 import { isMobile } from "react-device-detect";
 import Confetti from "./Confetti";
 import { LoadingSpinner } from "./LoadingSpinner";
-const HolidayMessage = lazy(() => import("./HolidayMessage"));
 const SocialMedia = lazy(() => import("./SocialMedia"));
 const CountdownTimer = ({ targetDate, CountDown, EventName, shareUrl }) => {
   const [timeLeft, setTimeLeft] = useState({});
@@ -100,125 +99,79 @@ const CountdownTimer = ({ targetDate, CountDown, EventName, shareUrl }) => {
             className="text-white"
             style={{
               backgroundColor: "#18678d",
-              height: "50px",
+              height: "70px",
               padding: "5px 0",
               ...blogTextStyle,
             }}
           >
-            {CountDown}
+            العد التنازلي ل
+            {EventName}
           </h2>
-          <p style={{ ...blogTextStyle, color: "black" }}>CountDown</p>
-          <div style={{ position: "relative" }}>
-            <Suspense fallback={<LoadingSpinner />}>
-              <HolidayMessage />
-            </Suspense>
-          </div>
-          <div style={{ display: "table", width: "100%", fontWeight: "bold" }}>
-            <div style={{ display: "table-row" }}>
-              <div
-                style={{
-                  display: "table-cell",
-                  fontSize: "50px",
-                  textAlign: "center",
-                }}
-              >
-                {timeLeft.months}
-              </div>
-              <div
-                style={{
-                  display: "table-cell",
-                  fontSize: "50px",
-                  textAlign: "center",
-                }}
-              >
-                {timeLeft.days}
-              </div>
-              <div
-                style={{
-                  display: "table-cell",
-                  fontSize: "50px",
-                  textAlign: "center",
-                }}
-              >
-                {timeLeft.hours}
-              </div>
-              <div
-                style={{
-                  display: "table-cell",
-                  fontSize: "50px",
-                  textAlign: "center",
-                }}
-              >
-                {timeLeft.minutes}
-              </div>
-              <div
-                style={{
-                  display: "table-cell",
-                  fontSize: "50px",
-                  textAlign: "center",
-                }}
-              >
-                {timeLeft.seconds}
-              </div>
-            </div>
-            <div style={{ display: "table-row" }}>
-              <div
-                style={{
-                  display: "table-cell",
-                  fontSize: "20px",
-                  textAlign: "center",
-                  ...blogTextStyle,
-                  color: "black",
-                }}
-              >
-                أشهر
-              </div>
-              <div
-                style={{
-                  display: "table-cell",
-                  fontSize: "20px",
-                  textAlign: "center",
-                  ...blogTextStyle,
-                  color: "black",
-                }}
-              >
-                أيام
-              </div>
-              <div
-                style={{
-                  display: "table-cell",
-                  fontSize: "20px",
-                  textAlign: "center",
-                  ...blogTextStyle,
-                  color: "black",
-                }}
-              >
-                ساعات
-              </div>
-              <div
-                style={{
-                  display: "table-cell",
-                  fontSize: "20px",
-                  textAlign: "center",
-                  ...blogTextStyle,
-                  color: "black",
-                }}
-              >
-                دقائق
-              </div>
-              <div
-                style={{
-                  display: "table-cell",
-                  fontSize: "20px",
-                  textAlign: "center",
-                  ...blogTextStyle,
-                  color: "black",
-                }}
-              >
-                ثواني
-              </div>
-            </div>
-          </div>
+          <div
+  style={{
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '10px',
+    padding: '20px',
+    backgroundColor: '#f3f4f6',
+    borderRadius: '12px',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+    maxWidth: '800px',
+    margin: '0 auto',
+    flexWrap: 'wrap', // Allows wrapping on smaller screens
+  }}
+>
+  {[
+    { value: timeLeft.months, label: 'شهر' },
+    { value: timeLeft.days, label: 'يوم' },
+    { value: timeLeft.hours, label: 'ساعة' },
+    { value: timeLeft.minutes, label: 'دقيقة' },
+    { value: timeLeft.seconds, label: 'ثانية' },
+  ].map((item, index) => (
+    <div
+      key={index}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '10px 15px',
+        borderRadius: '8px',
+        backgroundColor: '#65bee7',
+        color: '#ffffff',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
+        width: '120px', // Default width for desktop
+        textAlign: 'center',
+        fontSize: '16px',
+        
+        // Media query for mobile devices
+        ...(window.innerWidth < 600
+          ? {
+              width: '80px', // Smaller width for mobile
+              padding: '8px 10px',
+            }
+          : {}),
+      }}
+    >
+      <div style={{ fontSize: window.innerWidth < 600 ? '30px' : '40px', fontWeight: 'bold' }}>
+        {item.value}
+      </div>
+      <div
+        style={{
+          fontSize: window.innerWidth < 600 ? '14px' : '18px',
+          marginTop: '5px',
+          textTransform: 'uppercase',
+          color: '#ffffff',
+          opacity: 0.9,
+        }}
+      >
+        {item.label}
+      </div>
+    </div>
+  ))}
+</div>
+
+
           <hr />
           <Table striped bordered hover responsive>
             <tbody>
@@ -227,7 +180,7 @@ const CountdownTimer = ({ targetDate, CountDown, EventName, shareUrl }) => {
                   {`باقي على ${EventName} بالأشهر:`}
                 </td>
                 <td style={{ ...blogTextStyle, color: "black" }}>
-                  {Math.floor(timeLeft.months)} أشهر
+                  {Math.floor(timeLeft.months)} شهر
                 </td>
               </tr>
               <tr>
@@ -235,7 +188,7 @@ const CountdownTimer = ({ targetDate, CountDown, EventName, shareUrl }) => {
                   {`باقي على ${EventName} بالأسابيع:`}
                 </td>
                 <td style={{ ...blogTextStyle, color: "black" }}>
-                  {Math.floor(timeLeft.totalWeeks)} أسابيع
+                  {Math.floor(timeLeft.totalWeeks)} اسبوع
                 </td>
               </tr>
 
@@ -244,7 +197,7 @@ const CountdownTimer = ({ targetDate, CountDown, EventName, shareUrl }) => {
                   {`باقي على ${EventName} بالأيام:`}
                 </td>
                 <td style={{ ...blogTextStyle, color: "black" }}>
-                  {Math.floor(timeLeft.totalDays)} أيام
+                  {Math.floor(timeLeft.totalDays)} يوم
                 </td>
               </tr>
               <tr>
@@ -252,7 +205,7 @@ const CountdownTimer = ({ targetDate, CountDown, EventName, shareUrl }) => {
                   {`باقي على ${EventName} بالساعات:`}
                 </td>
                 <td style={{ ...blogTextStyle, color: "black" }}>
-                  {Math.floor(timeLeft.totalHours)} ساعات
+                  {Math.floor(timeLeft.totalHours)} ساعة
                 </td>
               </tr>
             </tbody>
@@ -290,7 +243,7 @@ const CountdownTimer = ({ targetDate, CountDown, EventName, shareUrl }) => {
         </button>
       )}
       {!isFullscreen ? (
-        <a href={`/${locale}/${createCountdownURL}/`}>
+        <a href={`/${createCountdownURL}/`}>
           <button
             style={{
               position: "relative",

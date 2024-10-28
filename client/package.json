@@ -1,5 +1,5 @@
 {
-  "name": "when-is",
+  "name": "maw3eed",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -8,18 +8,22 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
+    "browserify-fs": "^1.0.0",
     "date-fns": "^3.6.0",
     "date-fns-tz": "^3.1.3",
     "firebase": "^10.13.2",
     "moment-hijri": "^2.30.0",
+    "path-browserify": "^1.0.1",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.4",
     "react-canvas-confetti": "^2.0.7",
+    "react-country-flag": "^3.1.0",
+    "react-country-flags-lazyload": "^1.0.9",
     "react-device-detect": "^2.2.3",
-    "react-dom": "^18.3.1",
+    "react-dom": "^18.2.0",
     "react-firebase-hooks": "^5.1.1",
     "react-flagkit": "^2.0.4",
-    "react-helmet-async": "^2.0.5",
+    "react-helmet-async": "^1.3.0",
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.26.1",
     "react-scripts": "^5.0.1",
@@ -34,10 +38,15 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "set \"GENERATE_SOURCEmAP=false\" && react-scripts build",
+    "build": "react-scripts build",
+    "postbuild": "react-snap",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "sitemap": "node sitemap-generator"
+  },
+  "reactSnap": {
+    "inlineCss": true,
+    "skipThirdPartyRequests": true
   },
   "eslintConfig": {
     "extends": [
@@ -45,16 +54,10 @@
       "react-app/jest"
     ]
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "browserslist": [
+    "> 0.01%"
+  ],
+  "devDependencies": {
+    "webpack-cli": "^5.1.4"
   }
 }

@@ -1,136 +1,144 @@
-const { SitemapStream, streamToPromise } = require("sitemap");
-const { createWriteStream } = require("fs");
-const { read, utils } = require("xlsx");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
+const xlsx = require('xlsx');
 
-const countryNames = {
-  sy: "سوريا",
-  sa: "السعودية",
-  eg: "مصر",
-  // ae: "الإمارات",
-  // bh: "البحرين",
-  // dz: "الجزائر",
-  // iq: "العراق",
-  // jq: "الأردن",
-  // kw: "الكويت",
-  // lb: "لبنان",
-  // ly: "ليبيا",
-  // ma: "المغرب",
-  // om: "عمان",
-  // ps: "فلسطين",
-  // qa: "قطر",
-  // sd: "السودان",
-  // tn: "تونس",
-  // ye: "اليمن",
-};
+const websiteURL = "https://maw3eed.com";
+const countryCodes = ['sy', 'sa', 'eg', 'ae', 'dz', 'iq', 'jo', 'kw', 'sd'];
+const generalFilePath = path.join(__dirname, './src/Excel/Data/General.xlsx');
+const sitemapFilePath = path.join(__dirname, 'public/sitemap.xml');
 
-const websiteURL = "https://when-is.com";
+// Manually added URLs with last modified date
+const manualUrls = [
+  { url: `${websiteURL}/`, lastmod: '2024-10-28' }, 
+  { url: `${websiteURL}/عن_مواعيد/`, lastmod: '2024-10-28' }, 
+  { url: `${websiteURL}/اتصل_بنا/`, lastmod: '2024-10-28' },
+  { url: `${websiteURL}/الخصوصية/`, lastmod: '2024-10-28' },
+  { url: `${websiteURL}/مناسبات_عامة/`, lastmod: '2024-10-28' },
+  { url: `${websiteURL}/انشاء_عد_تنازلي/`, lastmod: '2024-10-28' }, 
+  // all events to everycounry
+  { url: `${websiteURL}/countries/sy/جميع_المناسبات/`, lastmod: '2024-10-28' }, 
+  { url: `${websiteURL}/countries/sa/جميع_المناسبات/`, lastmod: '2024-10-28' }, 
+  { url: `${websiteURL}/countries/eg/جميع_المناسبات/`, lastmod: '2024-10-28' }, 
+  { url: `${websiteURL}/countries/ae/جميع_المناسبات/`, lastmod: '2024-10-28' }, 
+  { url: `${websiteURL}/countries/dz/جميع_المناسبات/`, lastmod: '2024-10-28' }, 
+  { url: `${websiteURL}/countries/iq/جميع_المناسبات/`, lastmod: '2024-10-28' }, 
+  { url: `${websiteURL}/countries/jo/جميع_المناسبات/`, lastmod: '2024-10-28' }, 
+  { url: `${websiteURL}/countries/kw/جميع_المناسبات/`, lastmod: '2024-10-28' }, 
+  { url: `${websiteURL}/countries/sd/جميع_المناسبات/`, lastmod: '2024-10-28' }, 
 
-const parseExcelDate = (serial) => {
-  const excelEpoch = new Date(1899, 11, 30);
-  const daysOffset = serial - 1;
-  const date = new Date(
-    excelEpoch.getTime() + daysOffset * 24 * 60 * 60 * 1000
-  );
+  // all عطل قادمة لجميع الدول 
+  { url: `${websiteURL}/countries/sy/العطل_القادمة/`, lastmod: '2024-10-28' }, 
+  { url: `${websiteURL}/countries/sa/العطل_القادمة/`, lastmod: '2024-10-28' }, 
+  { url: `${websiteURL}/countries/eg/العطل_القادمة/`, lastmod: '2024-10-28' }, 
+  { url: `${websiteURL}/countries/ae/العطل_القادمة/`, lastmod: '2024-10-28' }, 
+  { url: `${websiteURL}/countries/dz/العطل_القادمة/`, lastmod: '2024-10-28' }, 
+  { url: `${websiteURL}/countries/iq/العطل_القادمة/`, lastmod: '2024-10-28' }, 
+  { url: `${websiteURL}/countries/jo/العطل_القادمة/`, lastmod: '2024-10-28' }, 
+  { url: `${websiteURL}/countries/kw/العطل_القادمة/`, lastmod: '2024-10-28' }, 
+  { url: `${websiteURL}/countries/sd/العطل_القادمة/`, lastmod: '2024-10-28' }, 
+];
 
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  const fullDate = `${year}-${month}-${day}`.split("T")[0];
-  return fullDate;
-};
 
-const fetchGeneralData = (filePath) => {
-  const workbook = read(filePath, { type: "file" });
-  const sheet = workbook.Sheets[workbook.SheetNames[0]];
-  const jsonData = utils.sheet_to_json(sheet);
-  return jsonData.map((row) => ({
-    url: row.URL || row.url,
-    lastmod: parseExcelDate(row.LastUpdated),
-  }));
-};
-
-const fetchCountryFlags = () => {
-  const allCountriesData = [];
-  const combinedJsonData = [];
-
-  const countryCodes = Object.keys(countryNames);
-  return Promise.all(
-    countryCodes.map(async (countryCode) => {
-      try {
-        const excelFilePath = path.join(
-          __dirname,
-          `./src/Excel/Data/Countries/${countryCode}.xlsx`
-        );
-        const workbook = read(excelFilePath, { type: "file" });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = utils.sheet_to_json(sheet);
-        combinedJsonData.push(...jsonData);
-
-        jsonData.forEach(() => {
-          const parsedCountryData = {
-            name: countryNames[countryCode],
-            countryCode: countryCode,
-            url: countryCode,
-          };
-          if (
-            !allCountriesData.find(
-              (data) => data.countryCode === parsedCountryData.countryCode
-            )
-          ) {
-            allCountriesData.push(parsedCountryData);
-          }
-        });
-      } catch (error) {
-        console.error(
-          `Error loading data for ${countryNames[countryCode]}:`,
-          error
-        );
+function formatExcelDate(dateString) {
+  if (typeof dateString === 'string') {
+      const parts = dateString.split('/'); // Split the date string
+      if (parts.length === 3) {
+          const day = parseInt(parts[0], 10);
+          const month = parseInt(parts[1], 10) - 1; // Month is zero-indexed
+          const year = parseInt(parts[2], 10);
+          const date = new Date(year, month, day); // Create a new Date object
+          return date.toISOString().split('T')[0]; // Return in YYYY-MM-DD format
       }
-    })
-  ).then(() => ({
-    allCountriesData,
-    combinedJsonData,
+  } else if (typeof dateString === 'number') {
+      // Handle the case if it is a serial number (though in your case, it looks like strings)
+      const date = xlsx.SSF.parse_date_code(dateString);
+      return new Date(date.y, date.m - 1, date.d).toISOString().split('T')[0];
+  }
+  
+  console.warn(`Invalid date format: ${dateString}`);
+  return new Date().toISOString().split('T')[0]; // Fallback to current date
+}
+
+// Function to read data from the country-specific Excel files
+function readCountryExcelData(countryCode) {
+  const filePath = path.join(__dirname, `./src/Excel/Data/Countries/${countryCode}.xlsx`);
+  const workbook = xlsx.readFile(filePath);
+  const sheetName = workbook.SheetNames[0];
+  const worksheet = workbook.Sheets[sheetName];
+  const jsonData = xlsx.utils.sheet_to_json(worksheet);
+
+  return jsonData.map(row => ({
+    lastUpdated: formatExcelDate(row.LastUpdated),
+    url: row.URL,
+    countryCode: row.countryCode
   }));
-};
+}
 
-async function generateSitemap() {
-  const generalDataFilePath = path.join(
-    __dirname,
-    "./src/Excel/Data/General.xlsx"
-  );
-  const generalRoutes = fetchGeneralData(generalDataFilePath);
+// Function to read data from the General Excel file
+function readGeneralExcelData() {
+  const workbook = xlsx.readFile(generalFilePath);
+  const sheetName = workbook.SheetNames[0];
+  const worksheet = workbook.Sheets[sheetName];
+  const jsonData = xlsx.utils.sheet_to_json(worksheet);
 
-  const { combinedJsonData } = await fetchCountryFlags();
+  return jsonData.map(row => ({
+    lastUpdated: formatExcelDate(row.LastUpdated),
+    url: row.URL // No country code in this case
+  }));
+}
 
-  const routes = [
-    ...generalRoutes,
-    ...combinedJsonData.map((row) => ({
-      url: row.URL || row.url,
-      lastmod: parseExcelDate(row.LastUpdated),
-    })),
-  ];
-  console.log("routes: ", routes);
+// Function to generate the sitemap
+function generateSitemap() {
 
-  const sitemapPath = path.join(__dirname, "public", "sitemap.xml");
-  const writeStream = createWriteStream(sitemapPath);
+  let urls = [];
 
-  const smStream = new SitemapStream({ hostname: websiteURL });
+  // Add manual URLs with last modified date
+  manualUrls.forEach(manualUrl => {
+    const fullUrl = `${manualUrl.url}`;
+    urls.push({
+      loc: encodeURI(fullUrl),
+      lastmod: manualUrl.lastmod 
+    });
+  });
+   // Process general URLs
+   const generalData = readGeneralExcelData();
+   generalData.forEach(row => {
+     const fullUrl = `${websiteURL}/${row.url}/`;
+     urls.push({
+       loc: encodeURI(fullUrl),
+       lastmod: formatExcelDate(row.lastUpdated) || new Date().toISOString() 
+     });
+   });
 
-  smStream.pipe(writeStream);
 
-  routes.forEach((route) => {
-    smStream.write({
-      url: route.url,
-      lastmod: route.lastmod,
+
+  // Process country-specific URLs
+  countryCodes.forEach(countryCode => {
+    const data = readCountryExcelData(countryCode);
+    data.forEach(row => {
+      const fullUrl = `${websiteURL}/counties/${row.countryCode}/${row.url}/`;
+      urls.push({
+        loc: encodeURI(fullUrl),
+        lastmod: formatExcelDate(row.lastUpdated) || new Date().toISOString() // Use lastUpdated from Excel or current date
+      });
     });
   });
 
-  smStream.end();
+ 
 
-  await streamToPromise(smStream);
+  // Generate sitemap XML
+  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap-image/1.1">
+    ${urls.map(({ loc, lastmod }) => `
+    <url>
+        <loc>${loc}</loc>
+        <lastmod>${lastmod}</lastmod>
+    </url>`).join('')}
+</urlset>`;
 
-  console.log("Sitemap successfully generated at public/sitemap.xml");
+  fs.writeFileSync(sitemapFilePath, sitemap);
+  console.log(`Sitemap has been generated at ${sitemapFilePath}`);
 }
 
-generateSitemap().catch(console.error);
+// Run the sitemap generator
+generateSitemap();

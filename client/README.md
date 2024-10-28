@@ -68,3 +68,11 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+### Edit to react snap
+##### index.js
+in line 773 put the following 
+ let routePath = route.replace(publicPath, "");
+      let decodedRoutePath = decodeURIComponent(routePath);
+      let filePath = path.join(destinationDir, decodedRoutePath);

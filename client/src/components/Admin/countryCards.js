@@ -173,27 +173,11 @@ export const renderCountryCards = (filteredData, activeTab) => {
           >
             Country Code: {countryCode}
           </p>
-          {/* <a href={`/ar/countdown/${id}`} style={{ color: "#18678d" }}>
-              Link to countdown
-            </a> */}
+      
 
           <p style={{ ...styles.cardDate }}>{parseExcelDate(LastUpdated)}</p>
           <div style={styles.actions}>
-            {/* <button
-              onClick={() => {
-                // setSelectedId(id);
-                setTitle(title);
-                setDescription(description);
-
-                // const dateObj = new Date(date.seconds * 1000);
-                // setDate(dateObj.toISOString().split("T")[0]);
-                // setTime(dateObj.toTimeString().split(" ")[0]);
-                setIsCountryModalOpen(true);
-              }}
-              style={styles.editButton}
-            >
-              Edit
-            </button> */}
+           
             <button
               onClick={() => {
                 Swal.fire({
@@ -205,18 +189,7 @@ export const renderCountryCards = (filteredData, activeTab) => {
                   cancelButtonColor: "#d9534f",
                   confirmButtonText: "Yes, delete it!",
                 });
-                //     .then((result) => {
-                //   if (result.isConfirmed) {
-                //     handleDelete(countryCode).then(() => {
-                //       Swal.fire({
-                //         title: "Deleted!",
-                //         text: "Countdown has been deleted.",
-                //         icon: "success",
-                //         confirmButtonColor: "#18678d",
-                //       });
-                //     });
-                //   }
-                // });
+              
               }}
               style={styles.deleteButton}
             >

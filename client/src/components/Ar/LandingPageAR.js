@@ -9,9 +9,11 @@ import { importAllImages } from "../../helpers/importImages.js";
 import { countries } from "./countries/CountriesNamesCodes.js";
 import { LoadingSpinner } from "../common/LoadingSpinner.js";
 import { SearchBar } from "../common/SearchBar.js";
-import { blogTextStyle, generalURL, locale,limitedCardsLandingPage } from "../common/constants.js";
+import { blogTextStyle, generalURL, limitedCardsLandingPage } from "../common/constants.js";
 import HolidayMessage from "../common/HolidayMessage.js";
-
+import SharedHelmet from "../common/Helmet.js";
+import { websiteURL } from "../common/constants.js";
+import logoImage from "../../images/logo.jpg";
 const CountryFlagsSection = lazy(() =>
   import("../../helpers/CountryFlagsSection.js")
 );
@@ -46,7 +48,6 @@ function LandingPage() {
     };
 
     fetchExcelData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -61,7 +62,6 @@ function LandingPage() {
           const sheet = workbook.Sheets[workbook.SheetNames[0]];
           const jsonData = utils.sheet_to_json(sheet);
 
-          // eslint-disable-next-line no-loop-func
           jsonData.forEach((row) => {
             const parsedCountryData = {
               name: country.name,
@@ -95,8 +95,65 @@ function LandingPage() {
   const limitedCards = filteredCards.slice(0, limitedCardsLandingPage);
   const hasResults = limitedCards.length > 0;
 
+  const DESCRIPTION = "موقع 'مواعيد' يخبرك كم باقي على الأحداث في العالم العربي ولكل دولة عربية، مع عد تنازلي للعطل والأعياد القادمة. محتوى متجدد ومتنوع."
+  const KEYWORDS = "موعد,مواعيد, أحداث, مناسبات, تكنولوجيا, صحة, علوم, عد تنازلي, العطل, الأعياد, مناسبات عربية"
+
+  const imagesToPreload = limitedCards.slice(0, 2).map(card => card.cardImg);
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${websiteURL}/`,
+    "name": "مواعيد",
+    "url": `${websiteURL}/`,
+    "description": DESCRIPTION,
+    "inLanguage": "ar",
+    "image": logoImage,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `${websiteURL}/`
+    }
+  };
+
+
   return (
     <div dir="rtl">
+      <SharedHelmet
+        TITLE="مواعيد"
+        DESCRIPTION={DESCRIPTION}
+        KEYWORDS={KEYWORDS}
+        OG_URL={websiteURL}
+        IMAGES_PRELOAD={imagesToPreload}
+        structuredData={structuredData}
+        IMAGE={logoImage}
+      />
+    <h1
+  style={{
+    backgroundColor: '#65bee7',
+    color: '#ffffff',
+    height: '90px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '1.5rem',  // Reduced base font size
+    fontWeight: 'bold',
+    textAlign: 'center',
+    textShadow: '1px 1px 4px rgba(0, 0, 0, 0.2)',
+    padding: '0 10px',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+    backgroundImage: 'linear-gradient(to right, #65bee7, #4ca3d3)',
+    width: '100%',
+    maxWidth: '850px',  // Limits width on larger screens
+    margin: '0 auto',
+   
+  }}
+  className="text-white"
+>
+  مواعيد : أكبر موقع لعرض الأحداث والمناسبات والفعاليات والأعياد في العالم العربي
+</h1>
+
+
       {/* Search bar */}
       <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
@@ -115,7 +172,7 @@ function LandingPage() {
               limitedCards.map((card, index) => (
                 <Col key={index} style={{ paddingBottom: "10px" }}>
                   <a
-                    href={`/${locale}/${generalURL}/${card.url}/`}
+                    href={`/${card.url}/`}
                     style={{ textDecoration: "none", ...blogTextStyle }}
                   >
                     <Card
@@ -129,19 +186,22 @@ function LandingPage() {
                       <Card.Img
                         variant="top"
                         src={card.cardImg}
-                        alt={card.cardTitle}
-                        loading="lazy"
+                        alt={`صورة ل ${card.cardTitle}`} // Make this more descriptive as needed
+                        loading={index < 2 ? "eager" : "lazy"}
+                        width="100%"
+                        height="200px"
                         style={{
                           borderTopLeftRadius: "10px",
                           borderTopRightRadius: "10px",
                           objectFit: "cover",
                           height: "200px",
+                          width: "100%",
                         }}
                       />
                       <Card.Body>
                         {/* Card title */}
                         <Card.Title
-                          style={{ textAlign: "center", color: "#18678d" }}
+                          style={{ textAlign: "center", color: "#18678d", height: '30px' }}
                         >
                           <h2 style={{ fontSize: "18px", fontWeight: "bold" }}>
                             {card.cardTitle}
@@ -172,7 +232,7 @@ function LandingPage() {
           {/* View more button */}
           <div className="text-center my-4">
             <a
-              href={`/${locale}/${generalURL}/`}
+              href={`/${generalURL}/`}
               className="button-hover"
               style={{
                 display: "inline-block",

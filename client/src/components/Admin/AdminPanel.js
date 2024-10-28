@@ -13,7 +13,7 @@ import { signOut } from "firebase/auth";
 import Swal from "sweetalert2";
 import Modal from "react-modal";
 import { fetchCountryFlags } from "../../helpers/readExcel.js";
-import { blogTextStyle, countdownURL, locale } from "../common/constants";
+import { blogTextStyle, countdownURL } from "../common/constants";
 import Axios from "../../helpers/Axios.js";
 import { styles } from "./styles.js";
 import { renderGeneralTable } from "./GeneralTable.js";
@@ -470,7 +470,7 @@ const AdminPanel = () => {
             ID: {id}
           </p>
           <a
-            href={`/${locale}/${countdownURL}/${id}`}
+            href={`/${countdownURL}/${id}`}
             style={{ color: "#18678d" }}
           >
             Link to countdown
@@ -976,7 +976,6 @@ const AdminPanel = () => {
               <>
                 {generalData && (
                   <div>
-                    {console.log("generalData: ", generalData)}
                     {generalData.map((article, index) => (
                       <div key={index} style={styles.card}>
                         <h3

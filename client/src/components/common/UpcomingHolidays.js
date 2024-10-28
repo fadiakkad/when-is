@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { parseISO, differenceInDays } from "date-fns";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { importAllImages } from "../../helpers/importImages";
 import {
   numOfSlicesHolidays,
-  countriesURL,
   holidaysURL,
-  locale,
-  generalURL,
   blogTextStyle,
 } from "./constants";
 
@@ -25,12 +22,10 @@ const UpcomingHolidays = ({ data, sortBy }) => {
   const location = useLocation();
   const pathname = location.pathname;
   const segments = pathname.split("/");
-  const countryCode = segments[3];
+  const countryCode = segments[2];
 
   const [sortedHolidays, setSortedHolidays] = useState([]);
-  // eslint-disable-next-line no-unused-vars
   const [showAll, setShowAll] = useState(false);
-  const navigate = useNavigate();
   const images = importAllImages(
     require.context("../../images", false, /\.(png|jpe?g|webp)$/)
   );
@@ -55,11 +50,7 @@ const UpcomingHolidays = ({ data, sortBy }) => {
     }
   }, [data, sortBy]);
 
-  const handleMoreClick = () => {
-    navigate(`/${locale}/${countryCode}/${holidaysURL}/`, {
-      state: { holidayData: sortedHolidays },
-    });
-  };
+  const moreURL = `/countries/${countryCode}/${holidaysURL}/`;
 
   const displayedHolidays = showAll
     ? sortedHolidays
@@ -110,6 +101,7 @@ const UpcomingHolidays = ({ data, sortBy }) => {
     border: "none",
     borderRadius: "5px",
     cursor: "pointer",
+    textDecoration: "none", 
   };
 
   return (
@@ -133,10 +125,9 @@ const UpcomingHolidays = ({ data, sortBy }) => {
               <a
                 href={
                   article.countryCode
-                    ? `/${locale}/${countriesURL}/${article.countryCode.toLowerCase()}/${
-                        article.URL || article.url
-                      }`
-                    : `/${locale}/${generalURL}/${article.URL}`
+                    ? `/countries/${article.countryCode.toLowerCase()}/${article.URL || article.url
+                    }/`
+                    : `/${article.URL}/`
                 }
                 style={{ ...titleStyle, ...blogTextStyle }}
               >
@@ -144,15 +135,17 @@ const UpcomingHolidays = ({ data, sortBy }) => {
                   src={images[article.ImageURL] || article.cardImg}
                   alt={article.Title || article.cardTitle}
                   style={imageStyle}
+                  loading="lazy"
+                  width="85px"
+                  height="55px"
                 />
               </a>
               <a
                 href={
                   article.countryCode
-                    ? `/${locale}/${countriesURL}/${article.countryCode.toLowerCase()}/${
-                        article.URL
-                      }`
-                    : `/${locale}/${generalURL}/${article.URL}`
+                    ? `/countries/${article.countryCode.toLowerCase()}/${article.URL || article.url
+                    }`
+                    : `/${article.URL}`
                 }
                 style={{ ...titleStyle, ...blogTextStyle }}
               >
@@ -166,18 +159,26 @@ const UpcomingHolidays = ({ data, sortBy }) => {
       </ul>
       {!showAll && (
         <div style={buttonContainerStyle}>
-          <button
-            onClick={handleMoreClick}
-            style={{ ...buttonStyle, ...blogTextStyle, color: "white" }}
-            onMouseEnter={(event) => {
-              event.target.style.color = "#d2e6ef";
-            }}
-            onMouseLeave={(event) => {
-              event.target.style.color = "white";
-            }}
+          <a
+            href={moreURL}
+
           >
-            المزيد
-          </button>
+            <button
+              style={{
+                ...buttonStyle,
+                ...blogTextStyle,
+                color: "white",
+              }}
+              onMouseEnter={(event) => {
+                event.target.style.color = "#d2e6ef";
+              }}
+              onMouseLeave={(event) => {
+                event.target.style.color = "white";
+              }}
+            >
+              المزيد
+            </button>
+          </a>
         </div>
       )}
       <br />

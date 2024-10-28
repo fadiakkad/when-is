@@ -11,17 +11,21 @@ import {
   GeneralCountryListAdsMobile,
 } from "../../common/Ads.js";
 import { SearchBar } from "../../common/SearchBar.js";
-import { blogTextStyle, countriesURL, locale } from "../../common/constants.js";
+import { blogTextStyle, websiteURL } from "../../common/constants.js";
 import { LoadingSpinner } from "../../common/LoadingSpinner.js";
-import  landingPageSheet from "../../../Excel/Data/General.xlsx";
+import landingPageSheet from "../../../Excel/Data/General.xlsx";
 import { fetchGeneralData } from "../../../helpers/readExcel.js";
-
+import SharedHelmet from "../../common/Helmet.js";
+import { countryNames } from "./CountriesNamesCodes.js";
+import logoImage from "../../../images/logo.jpg";
 const LatestArticles = lazy(() => import("../../common/LatestArticles"));
 const UpcomingHolidays = lazy(() => import("../../common/UpcomingHolidays.js"));
 
 let countryJsonData = "";
 
 function Cards() {
+  console.log("countryCode");
+
   const [searchTerm, setSearchTerm] = useState("");
   const [cardData, setCardData] = useState([]);
   const { countryCode } = useParams();
@@ -29,7 +33,7 @@ function Cards() {
   const images = importAllImages(
     require.context("../../../images", false, /\.(png|jpe?g|webp)$/)
   );
-
+console.log("countryCode", countryCode);
   useEffect(() => {
     const fetchCardData = async () => {
       try {
@@ -65,11 +69,72 @@ function Cards() {
     };
     fetchGeneral();
     fetchCardData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countryCode]);
+  // add الاحداث العامة لكل دولة + countryName
+  const TITLE = `الأحداث العامة في ${countryNames[countryCode]} - اكتشف أحدث العطلات والمناسبات والفعاليات في ${countryNames[countryCode]}`;
+  const DESCRIPTION = `تعرف على الأحداث العامة، والعطلات الرسمية، والمناسبات الوطنية في ${countryNames[countryCode]}. نقدم لك تقويمًا شاملًا للفعاليات القادمة والأيام الخاصة التي يجب أن تعرفها، سواء كانت عطلات رسمية، أعياد وطنية، أو مناسبات ثقافية مهمة.`;
+  const KEYWORDS = `الأحداث العامة في ${countryNames[countryCode]}, العطلات الرسمية في ${countryNames[countryCode]}, مناسبات ${countryNames[countryCode]}, تقويم الفعاليات ${countryNames[countryCode]}, الأعياد الوطنية, العطلات الدينية, تقويم ${countryNames[countryCode]}, مناسبات ثقافية`;
+  const OG_URL = `${websiteURL}/countries/${countryCode}/جميع_المناسبات/`;
 
+  const imagesToPreload = cardData.slice(0, 2).map(card => card.cardImg);
+  const eventsStructuredData = cardData.map(card => ({
+    "@type": "Event",
+    "name": card.cardTitle,
+    "startDate": card.eventDate,
+    "location": {
+      "@type": "Place",
+      "name": countryNames[countryCode],
+    },
+    "image": `${websiteURL}${card.cardImg}`,
+    "url": `${websiteURL}/countries/${countryCode}/${card.url}/`,
+    "description": `اكتشف ${card.cardTitle} في ${countryNames[countryCode]} بالإضافة إلى العد التنازلي.`
+  }));
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": eventsStructuredData,
+  };
   return (
     <>
+      <SharedHelmet
+        TITLE={TITLE}
+        DESCRIPTION={DESCRIPTION}
+        KEYWORDS={KEYWORDS}
+        OG_URL={OG_URL}
+        COUNTRY_CODE={countryCode}
+        taxonomyTerms={KEYWORDS}
+        IMAGES_PRELOAD={imagesToPreload}
+        structuredData={structuredData}
+        IMAGE={logoImage}
+
+
+      />
+      <h1
+        style={{
+          backgroundColor: '#65bee7',
+          color: '#ffffff',
+          height: '80px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '1.5rem',  // Reduced base font size
+          fontWeight: 'bold',
+          textAlign: 'center',
+          textShadow: '1px 1px 4px rgba(0, 0, 0, 0.2)',
+          padding: '0 10px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+          backgroundImage: 'linear-gradient(to right, #65bee7, #4ca3d3)',
+          width: '100%',
+          maxWidth: '800px',  // Limits width on larger screens
+          margin: '0 auto',
+
+        }}
+        className="text-white"
+      >
+        أهم الأحداث والمناسبات والأعياد والفعاليات في {countryNames[countryCode]}
+      </h1>
       {/* Search bar */}
       <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
@@ -89,7 +154,7 @@ function Cards() {
                     }}
                   >
                     <a
-                      href={`/${locale}/${countriesURL}/${countryCode}/${card.url}/`}
+                      href={`/countries/${countryCode}/${card.url}/`}
                       style={{
                         textDecoration: "none",
                         ...blogTextStyle,
@@ -100,8 +165,10 @@ function Cards() {
                       <Card.Img
                         variant="top"
                         src={card.cardImg}
-                        alt={card.url}
-                        loading="lazy"
+                        alt={`صورة ل ${card.cardTitle}`}
+                        loading={index < 2 ? "eager" : "lazy"}
+                        width="100%"
+                        height="200px"
                         style={{
                           borderTopLeftRadius: "10px",
                           borderTopRightRadius: "10px",
@@ -112,7 +179,7 @@ function Cards() {
                       />
                       <Card.Body>
                         <Card.Title
-                          style={{ textAlign: "center", color: "#18678d" }}
+                          style={{ textAlign: "center", color: "#18678d", height: '35px' }}
                         >
                           <h2 style={{ fontSize: "18px", fontWeight: "bold" }}>
                             {card.cardTitle}
@@ -135,7 +202,7 @@ function Cards() {
         </Col>
 
         <Col xs={12} lg={3}>
-          <br />
+
           <GeneralCountryListAdsDesktop />
           <hr />
           <Suspense fallback={<LoadingSpinner />}>

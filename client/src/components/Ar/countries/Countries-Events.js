@@ -2,9 +2,9 @@ import React, { useState, useEffect, lazy, Suspense } from "react";
 import { useParams } from "react-router-dom";
 import { read, utils } from "xlsx";
 import { importAllImages } from "../../../helpers/importImages.js";
-import { websiteURL, countriesURL, locale } from "../../common/constants.js";
+import { websiteURL } from "../../common/constants.js";
 import { LoadingSpinner } from "../../common/LoadingSpinner.js";
-
+import { countryNames } from "./CountriesNamesCodes.js";
 const SharedArticlePage = lazy(() =>
   import("../../common/SharedArticlePage.js")
 );
@@ -65,22 +65,58 @@ const ArticlePage = () => {
     };
 
     fetchCardData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countryCode, url]);
 
   useEffect(() => {
-    console.log("cardData: ", cardData);
   });
 
   if (!cardData) {
     return <p>المقال غير موجود</p>;
   }
-  const OG_URL = `${websiteURL}/${locale}/${countriesURL}/${countryCode}/${url}`;
+  const OG_URL = `${websiteURL}/countries/${countryCode}/${url}/`;
+  const contentType = "article";
+  const DescriptionForStructuredData = `من خلال هذه المقالة، يمكنكم معرفة ${cardData.cardTitle} في ${countryNames[countryCode]}. كما تعرض لكم هذه المقالة العد التنازلي لـ ${cardData.EventName} بالأشهر والأسابيع والأيام والساعات. وستجدون أيضاً المصادر التي تم الاعتماد عليها في هذا المقال من أجل معرفة موعد ${cardData.EventName} بالتفصيل.`;
+  const FullImageURL = `${websiteURL}${images[cardData.cardImg]}`;
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": cardData.EventName,
+    "startDate": cardData.TargetDate,
+    "eventStatus": "https://schema.org/EventScheduled",
+    "location": {
+      "@type": "Place",
+      "url": OG_URL 
+    },
+    "image": FullImageURL, // The image of the event
+    "description": DescriptionForStructuredData,
+  };
+
+  const articleStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": cardData.Title,
+    "image": FullImageURL,
+    "description": DescriptionForStructuredData,
+    "author": {
+      "@type": "Organization",
+      "name": "مواعيد"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "مواعيد",
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": OG_URL
+    }
+  };
+  const fullStructuredData = [structuredData, articleStructuredData];
+
   return (
     <Suspense fallback={<LoadingSpinner />}>
       <SharedArticlePage
         Title={cardData.cardTitle}
-        ImageURL={cardData.cardImg}
+        ImageURL={images[cardData.cardImg]}
         LastUpdated={cardData.LastUpdated}
         TextBelowTitle={cardData.BelowTitle}
         CountDown={cardData.CountDown}
@@ -99,6 +135,12 @@ const ArticlePage = () => {
         countryCode={countryCode}
         link={cardData.link}
         linkTitle={cardData.linkTitle}
+        taxonomyTerms={cardData.Helmet_Keywords}
+        contentType={contentType}
+        pageTitle={cardData.cardTitle}
+        articleSlug={url}
+        where={countryNames[countryCode]}
+        structuredData={fullStructuredData}
       />
     </Suspense>
   );

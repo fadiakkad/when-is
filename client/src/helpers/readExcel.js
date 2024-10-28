@@ -27,7 +27,7 @@ export const fetchGeneralData = async (filePath) => {
     return [];
   }
 };
-
+console.log("you are in readExcel.js");
 export const fetchCountryFlags = async () => {
   const allCountriesData = [];
   const combinedJsonData = [];

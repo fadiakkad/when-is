@@ -7,7 +7,7 @@ import CountdownTimer from "./CountdownTimer";
 import { collectionName } from "./constants";
 import { format, toZonedTime } from "date-fns-tz";
 import SharedHelmet from "./Helmet";
-
+import logoImage from "../../images/logo.jpg";
 const Countdown = () => {
   const { countdownId } = useParams();
   const [countdown, setCountdown] = useState(null);
@@ -45,12 +45,11 @@ const Countdown = () => {
   const CheckTimezone = async () => {
     try {
       const endpoint =
-        "http://ip-api.com/json/?fields=status,message,countryCode,query,proxy,timezone";
+        "https://ip-api.com/json/?fields=status,message,countryCode,query,proxy,timezone";
       const response = await fetch(endpoint);
       const data = await response.json();
 
       if (data.status !== "success") {
-        console.log("Query failed: " + data.message);
         return {
           isUsingVPN: false,
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -98,6 +97,9 @@ const Countdown = () => {
         DESCRIPTION={countdown.description}
         KEYWORDS={countdown.description}
         OG_URL={window.location.href}
+        isNotIndexed={true}
+        IMAGE={logoImage}
+
       />
       <div style={styles.countdownContainer} dir="rtl">
         <h3 style={styles.countdownTitle}>

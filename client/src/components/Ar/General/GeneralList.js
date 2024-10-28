@@ -12,9 +12,10 @@ import {
   GeneralCountryListAdsMobile,
 } from "../../common/Ads.js";
 import { SearchBar } from "../../common/SearchBar.js";
-import { blogTextStyle } from "../../common/constants.js";
-import Flag from "react-flagkit";
-
+import { blogTextStyle,websiteURL,generalURL } from "../../common/constants.js";
+import SharedHelmet from "../../common/Helmet.js";
+import LazyLoadFlag from "../../../helpers/LazyLoadFlag.js";
+import logoImage from "../../../images/logo.jpg";
 let allCountriesData = "";
 
 function General() {
@@ -33,7 +34,6 @@ function General() {
         const workbook = read(arrayBuffer, { type: "array" });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const jsonData = utils.sheet_to_json(sheet);
-        console.log("jsonData: ", jsonData);
         const parsedData = jsonData.map((row, index) => ({
           cardNumber: index + 1,
           cardTitle: row.Title,
@@ -49,7 +49,6 @@ function General() {
     };
 
     fetchCardData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -91,13 +90,66 @@ function General() {
 
   const combinedData = [...cardData, ...allCountriesData];
 
-  // const filteredCards = cardData
-  //   .filter((card) =>
-  //     card.cardTitle.toLowerCase().includes(searchTerm.toLowerCase())
-  //   )
-  //   .sort((a, b) => a.date - b.date);
+  const TITLE = "مواعيد - أحداث ومناسبات العالم العربي"
+  const DESCRIPTION = "تعرف على اهم مواعيد الاحداث العامة في الوطن العربي, مثل كم باقي على رمضان, العيد, الحج, العام الهجري, العام الميلادي, واحداث اخرى"
+  const KEYWORDS = "موعد, مواعيد, أحداث, مناسبات, تكنولوجيا, صحة, علوم"
+  const OG_URL = `${websiteURL}/${generalURL}/`
+
+  const imagesToPreload = cardData.slice(0, 2).map(card => card.cardImg);
+
+
+  const eventsStructuredData = cardData.map(card => ({
+    "@type": "Event",
+    "name": card.Title,
+    "startDate": card.eventDate, 
+   
+    "image": `${websiteURL}${card.cardImg}`,
+    "url": `${websiteURL}/${card.url}/`,
+    "description": `اكتشف ${card.cardTitle} في  بالإضافة إلى العد التنازلي.`
+  }));
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": eventsStructuredData,
+  };
+
   return (
     <>
+      <SharedHelmet
+        TITLE={TITLE}
+        DESCRIPTION={DESCRIPTION}
+        KEYWORDS={KEYWORDS}
+        OG_URL={OG_URL}
+        IMAGE={logoImage}
+        IMAGES_PRELOAD={imagesToPreload} 
+        structuredData={structuredData}
+      />
+          <h1
+  style={{
+    backgroundColor: '#65bee7',
+    color: '#ffffff',
+    height: '80px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '1.5rem',  // Reduced base font size
+    fontWeight: 'bold',
+    textAlign: 'center',
+    textShadow: '1px 1px 4px rgba(0, 0, 0, 0.2)',
+    padding: '0 10px',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+    backgroundImage: 'linear-gradient(to right, #65bee7, #4ca3d3)',
+    width: '100%',
+    maxWidth: '800px',  // Limits width on larger screens
+    margin: '0 auto',
+    
+  }}
+  className="text-white"
+>
+  أهم الأحداث والمناسبات والأعياد والفعاليات في العالم العربي
+</h1>
       {/* Search bar */}
       <SearchBar
         searchTerm={searchTerm}
@@ -121,14 +173,16 @@ function General() {
                     }}
                   >
                     <a
-                      href={`/ar/general/${card.url}/`}
+                      href={`/${card.url}/`}
                       style={{ textDecoration: "none", ...blogTextStyle }}
                     >
                       <Card.Img
                         variant="top"
                         src={card.cardImg}
-                        alt={card.titleInternal}
-                        loading="lazy"
+                        alt={`صورة ل ${card.cardTitle}`}
+                        loading={index < 2 ? "eager" : "lazy"} 
+                        width="100%"
+                        height="200px" 
                         style={{
                           borderTopLeftRadius: "10px",
                           borderTopRightRadius: "10px",
@@ -139,7 +193,7 @@ function General() {
                       />
                       <Card.Body>
                         <Card.Title
-                          style={{ textAlign: "center", color: "#18678d" }}
+                          style={{ textAlign: "center", color: "#18678d", height: '30px' }}
                         >
                           <h2 style={{ fontSize: "18px", fontWeight: "bold" }}>
                             {card.cardTitle}
@@ -162,7 +216,7 @@ function General() {
         </Col>
 
         <Col xs={12} lg={3}>
-          <br />
+
           <GeneralCountryListAdsDesktop />
           <hr />
           <div className="mt-3">
@@ -180,11 +234,9 @@ function General() {
             <div style={containerStyle}>
               {countryFlags.map((country, index) => (
                 <div key={index} style={countryStyle}>
-                  <a href={`/ar/countries/${country.url}/`} style={linkStyle}>
-                    <Flag
-                      country={country.countryCode.toUpperCase()}
-                      style={flagStyle}
-                    />
+                  <a href={`/countries/${country.url}/جميع_المناسبات/`} style={linkStyle}>
+                  <LazyLoadFlag countryCode={country.countryCode.toUpperCase()} style={flagStyle} />
+              
                     <p
                       style={{
                         ...blogTextStyle,

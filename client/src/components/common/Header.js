@@ -5,10 +5,10 @@ import Navbar from "react-bootstrap/Navbar";
 import { blogTextStyle } from "./constants";
 
 const navMenuStyle = {
-  direction: "rtl",
   backgroundColor: "#18678d",
   color: "#e28743",
-  justifyContent: "flex-end",
+  justifyContent: "center",
+  marginRight: "30px" 
 };
 
 function Header() {
@@ -19,12 +19,13 @@ function Header() {
   const linkStyle = {
     color: "white",
   };
+
   return (
     <>
       <Navbar style={{ backgroundColor: "#18678d" }} variant="dark" expand="lg">
         <Container>
-          <Navbar.Brand href="/" style={{ ...blogTextStyle, color: "white" }}>
-            موعد
+          <Navbar.Brand    href="/" style={{ ...blogTextStyle, color: "white" }}>
+          مواعيد
           </Navbar.Brand>
           <Navbar.Toggle
             aria-controls="responsive-navbar-nav"
@@ -45,7 +46,7 @@ function Header() {
                 القائمة الرئيسية
               </Nav.Link>
               <Nav.Link
-                href="/ar/general/"
+                href="/مناسبات_عامة/"
                 style={{ ...linkStyle, ...blogTextStyle, color: "white" }}
                 onMouseEnter={(event) => {
                   event.target.style.color = "#d2e6ef";
@@ -57,7 +58,7 @@ function Header() {
                 مواعيد عامة
               </Nav.Link>
               <Nav.Link
-                href="/ar/about/"
+                href="/عن_مواعيد/"
                 style={{ ...linkStyle, ...blogTextStyle, color: "white" }}
                 onMouseEnter={(event) => {
                   event.target.style.color = "#d2e6ef";
@@ -69,7 +70,7 @@ function Header() {
                 حول
               </Nav.Link>
               <Nav.Link
-                href="/ar/create-countdown/"
+                href="/انشاء_عد_تنازلي/"
                 style={{ ...linkStyle, ...blogTextStyle, color: "white" }}
                 onMouseEnter={(event) => {
                   event.target.style.color = "#d2e6ef";

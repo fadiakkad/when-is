@@ -14,6 +14,7 @@ const LatestArticles = lazy(() => import("./LatestArticles"));
 const UpcomingHolidays = lazy(() => import("./UpcomingHolidays"));
 const GregorianToHijri = lazy(() => import("../common/GregorianToHijri"));
 const DayName = lazy(() => import("../common/DayName"));
+const HolidayMessage = lazy(() => import("./HolidayMessage"));
 const SharedArticlePage = ({
   Title,
   ImageURL,
@@ -35,16 +36,32 @@ const SharedArticlePage = ({
   LatestArticlesData,
   link,
   linkTitle,
+  taxonomyTerms,
+  contentType,
+  pageTitle,
+  articleSlug,
+  where,
+  structuredData
+
 }) => (
+
   <Container dir="rtl">
     <SharedHelmet
       TITLE={Title}
       DESCRIPTION={Helmet_Description}
       KEYWORDS={Helmet_Keywords}
       OG_URL={OG_URL}
-      IMAGE={images[ImageURL]}
+      IMAGE={ImageURL}
       COUNTRY_CODE={countryCode}
+      taxonomyTerms={taxonomyTerms}
+      contentType={contentType}
+      pageTitle={pageTitle}
+      articleSlug={articleSlug}
+      where={where}
+      structuredData={structuredData}
+
     />
+
     <TopAdsDesktop />
     <br />
     <Row>
@@ -56,7 +73,11 @@ const SharedArticlePage = ({
         <br />
         <p style={{ ...blogTextStyle, color: "black" }}>
           {TextBelowTitle}
-          <br />
+        </p>
+        <p style={{ ...blogTextStyle, color: "black" }}>
+          من خلال هذه المقالة, يمكنكم معرفة  {Title} .كما أيضاً تعرض لكم هذه المقالة العد التنازلي ل {EventName} بالأشهر والأسابيع والأيام والساعات.
+          وستجدون أيضاً المصادر التي تم الاعتماد عليها في هذا المقال من أجل معرفة موعد {EventName} بالتفصيل.
+
         </p>
         {/* Last Updated */}
         <Suspense fallback={<LoadingSpinner />}>
@@ -66,48 +87,54 @@ const SharedArticlePage = ({
             locale={locale}
           />
         </Suspense>
-      </Col>
-      <Col xs={12} lg={4}>
-        <LatestArticles data={LatestArticlesData} sortBy="LastUpdated" />
-      </Col>
-    </Row>
-    <Row>
-      <Col xs={12} lg={8}>
-        {/* Article Image */}
+        <br />
         {ImageURL && (
           <div>
             <br />
             <img
-              src={images[ImageURL]}
+              src={ImageURL}
               alt={Title}
+              loading="lazy"
+              width={isMobile ? "340px" : "614px"} 
+              height="350px"
               style={{
                 width: isMobile ? "340px" : "614px",
-                maxHeight: "292px",
+                height: "350px",
                 objectFit: "cover",
                 borderRadius: "10px",
               }}
             />
-            <p>ImageURL</p>
+
           </div>
         )}
+        <br />
       </Col>
       <Col xs={12} lg={4}>
+        <LatestArticles data={LatestArticlesData} sortBy="LastUpdated" />
         <br />
         <BodyAdsDesktop />
+
       </Col>
     </Row>
 
+
     <BodyAdsMobile />
     <hr />
-
+    <div style={{ position: "relative" }}>
+      <Suspense fallback={<LoadingSpinner />}>
+        <HolidayMessage />
+      </Suspense>
+    </div>
     {/* Countdown Timer */}
     <Suspense fallback={<LoadingSpinner />}>
+
       <CountdownTimer
         targetDate={TargetDate}
         CountDown={CountDown}
         EventName={EventName}
         shareUrl={OG_URL}
       />
+
     </Suspense>
     <Row>
       <Col xs={12} lg={9}>
@@ -121,13 +148,13 @@ const SharedArticlePage = ({
             textAlign: "right",
           }}
         >
-          <h3 style={{ color: "#18678d", fontSize: "22px", ...blogTextStyle }}>
+          <h2 style={{ color: "#18678d", fontSize: "22px", ...blogTextStyle }}>
             محتويات المقال:
-          </h3>
+          </h2>
           <ul>
             <li>
               <a href="#when-is" style={blogTextStyle}>
-                متى يبدأ {EventName} ؟
+                متى  {EventName} ؟
               </a>
             </li>
             <li>
@@ -167,7 +194,7 @@ const SharedArticlePage = ({
             id="when-is"
             style={{ color: "#18678d", fontSize: "22px", ...blogTextStyle }}
           >
-            متى يبدأ {EventName}؟
+            متى  {EventName}؟
           </h2>
           <div
             style={{
@@ -181,14 +208,15 @@ const SharedArticlePage = ({
             }}
           >
             <span style={{ marginLeft: "5px" }}>
-              من المتوقع أن يبدأ موعد {EventName} في
+              من المتوقع أن يبدأ موعد {EventName}
+              {" "}
+              في
             </span>
-            <span style={{ marginLeft: "5px" }}>
-              {new Date(TargetDate)
-                .toISOString()
-                .split("T")[0]
-                .replace(/-/g, "/")}
-            </span>
+
+
+            <time style={{ marginLeft: "10px" }} dateTime={new Date(TargetDate).toISOString()}>
+              {new Date(TargetDate).toISOString().split("T")[0].replace(/-/g, "/")}
+            </time>
             <span style={{ marginLeft: "5px" }}>ميلادي ويوافق</span>
             <span style={{ marginLeft: "5px" }}>
               <Suspense fallback={<LoadingSpinner />}>
@@ -204,7 +232,7 @@ const SharedArticlePage = ({
             </span>
           </div>
 
-          <br />
+
 
           <hr />
           <br />
@@ -224,7 +252,7 @@ const SharedArticlePage = ({
           >
             {WhatIs}
           </p>
-          <br />
+
           <hr />
           <br />
           <h2
@@ -243,7 +271,6 @@ const SharedArticlePage = ({
           >
             {Importance}
           </p>
-          <br />
           <hr />
           <br />
           <h2
@@ -262,7 +289,6 @@ const SharedArticlePage = ({
           >
             {Preparation}
           </p>
-          <br />
           <hr />
           <br />
           <h2
