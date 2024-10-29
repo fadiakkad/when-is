@@ -12,7 +12,7 @@ import {
   GeneralCountryListAdsMobile,
 } from "../../common/Ads.js";
 import { SearchBar } from "../../common/SearchBar.js";
-import { blogTextStyle,websiteURL,generalURL } from "../../common/constants.js";
+import { blogTextStyle, websiteURL, generalURL } from "../../common/constants.js";
 import SharedHelmet from "../../common/Helmet.js";
 import LazyLoadFlag from "../../../helpers/LazyLoadFlag.js";
 import logoImage from "../../../images/logo.jpg";
@@ -40,6 +40,7 @@ function General() {
           cardImg: images[row.ImageURL],
           url: row.URL,
           titleInternal: row.TitleInternal,
+          targetDate : row.TargetDate,
         }));
 
         setCardData(parsedData);
@@ -97,22 +98,41 @@ function General() {
 
   const imagesToPreload = cardData.slice(0, 2).map(card => card.cardImg);
 
-
+  const articleStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": TITLE,  
+    "description": DESCRIPTION,  
+    "image": logoImage,  
+    "author": {
+      "@type": "Organization",
+      "name": "مواعيد"  
+    },
+    "datePublished": "2024-10-28T00:00:00Z", 
+    "dateModified": new Date().toISOString(),  
+    "mainEntityOfPage": OG_URL  
+  };
+  
   const eventsStructuredData = cardData.map(card => ({
+    "@context": "https://schema.org",
     "@type": "Event",
-    "name": card.Title,
-    "startDate": card.eventDate, 
-   
-    "image": `${websiteURL}${card.cardImg}`,
-    "url": `${websiteURL}/${card.url}/`,
-    "description": `اكتشف ${card.cardTitle} في  بالإضافة إلى العد التنازلي.`
+    "name": card.cardTitle,  // Event name
+    "startDate": card.targetDate,  // Event start date
+    "image": `${websiteURL}${card.cardImg}`,  // Event image
+    "url": `${websiteURL}/${card.url}/`,  // Event URL
+    "description": `اكتشف ${card.cardTitle} بالإضافة إلى العد التنازلي.`,  // Event description
+    "location": {
+      "@type": "Place",
+      "name": "مناسبات في الوطن العربي", 
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "AR" 
+      }
+    },
+    "eventStatus": "https://schema.org/EventScheduled"  // Event status
   }));
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "itemListElement": eventsStructuredData,
-  };
+ 
 
   return (
     <>
@@ -122,34 +142,37 @@ function General() {
         KEYWORDS={KEYWORDS}
         OG_URL={OG_URL}
         IMAGE={logoImage}
-        IMAGES_PRELOAD={imagesToPreload} 
-        structuredData={structuredData}
+        IMAGES_PRELOAD={imagesToPreload}
+        articleStructuredData={articleStructuredData}
+        eventsStructuredData={eventsStructuredData}
       />
-          <h1
-  style={{
-    backgroundColor: '#65bee7',
-    color: '#ffffff',
-    height: '80px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '1.5rem',  // Reduced base font size
-    fontWeight: 'bold',
-    textAlign: 'center',
-    textShadow: '1px 1px 4px rgba(0, 0, 0, 0.2)',
-    padding: '0 10px',
-    borderRadius: '8px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-    backgroundImage: 'linear-gradient(to right, #65bee7, #4ca3d3)',
-    width: '100%',
-    maxWidth: '800px',  // Limits width on larger screens
-    margin: '0 auto',
-    
-  }}
-  className="text-white"
->
-  أهم الأحداث والمناسبات والأعياد والفعاليات في العالم العربي
-</h1>
+
+
+      <h1
+        style={{
+          backgroundColor: '#65bee7',
+          color: '#ffffff',
+          height: '80px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '1.5rem',  // Reduced base font size
+          fontWeight: 'bold',
+          textAlign: 'center',
+          textShadow: '1px 1px 4px rgba(0, 0, 0, 0.2)',
+          padding: '0 10px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+          backgroundImage: 'linear-gradient(to right, #65bee7, #4ca3d3)',
+          width: '100%',
+          maxWidth: '800px',  // Limits width on larger screens
+          margin: '0 auto',
+
+        }}
+        className="text-white"
+      >
+        أهم الأحداث والمناسبات والأعياد والفعاليات في العالم العربي
+      </h1>
       {/* Search bar */}
       <SearchBar
         searchTerm={searchTerm}
@@ -180,9 +203,9 @@ function General() {
                         variant="top"
                         src={card.cardImg}
                         alt={`صورة ل ${card.cardTitle}`}
-                        loading={index < 2 ? "eager" : "lazy"} 
+                        loading={index < 2 ? "eager" : "lazy"}
                         width="100%"
-                        height="200px" 
+                        height="200px"
                         style={{
                           borderTopLeftRadius: "10px",
                           borderTopRightRadius: "10px",
@@ -235,8 +258,8 @@ function General() {
               {countryFlags.map((country, index) => (
                 <div key={index} style={countryStyle}>
                   <a href={`/countries/${country.url}/جميع_المناسبات/`} style={linkStyle}>
-                  <LazyLoadFlag countryCode={country.countryCode.toUpperCase()} style={flagStyle} />
-              
+                    <LazyLoadFlag countryCode={country.countryCode.toUpperCase()} style={flagStyle} />
+
                     <p
                       style={{
                         ...blogTextStyle,

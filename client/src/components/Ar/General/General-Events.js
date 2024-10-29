@@ -42,6 +42,7 @@ const ArticlePage = () => {
     return <p>المقال غير موجود</p>;
   }
 
+
   const {
     Title,
     ImageURL,
@@ -67,7 +68,14 @@ const ArticlePage = () => {
   const contentType = "article";
   const DescriptionForStructuredData = `من خلال هذه المقالة, يمكنكم معرفة  ${Title} .كما أيضاً تعرض لكم هذه المقالة العد التنازلي ل ${EventName} بالأشهر والأسابيع والأيام والساعات. وستجدون أيضاً المصادر التي تم الاعتماد عليها في هذا المقال من أجل معرفة موعد ${EventName} بالتفصيل.`;
   const FullImageURL = `${websiteURL}${images[ImageURL]}`;
-  const structuredData = {
+
+  function convertExcelDateToISO(excelDate) {
+    const excelEpoch = new Date(Date.UTC(1900, 0, 1)); // January 1, 1900
+    const date = new Date(excelEpoch.setDate(excelEpoch.getDate() + excelDate - 1));
+    return date.toISOString(); 
+}
+const formattedDate = convertExcelDateToISO(LastUpdated);
+  const eventsStructuredData = {
     "@context": "https://schema.org",
     "@type": "Event",
     "name": EventName,
@@ -75,7 +83,7 @@ const ArticlePage = () => {
     "eventStatus": "https://schema.org/EventScheduled",
     "location": {
       "@type": "Place",
-      "url": OG_URL
+      "name": "اسيا, العالم العربي"
     },
     "image": FullImageURL, 
     "description": DescriptionForStructuredData,
@@ -86,6 +94,7 @@ const ArticlePage = () => {
     "@type": "Article",
     "headline": Title,
     "image": FullImageURL,
+    "dateModified": formattedDate,
     "description": DescriptionForStructuredData,
     "author": {
       "@type": "Organization",
@@ -100,7 +109,6 @@ const ArticlePage = () => {
       "@id": OG_URL
     }
   };
-  const fullStructuredData = [structuredData, articleStructuredData];
 
 
   return (
@@ -129,7 +137,9 @@ const ArticlePage = () => {
         contentType={contentType}
         pageTitle={Title}
         articleSlug={articleSlug}
-        structuredData={fullStructuredData}
+        articleStructuredData={articleStructuredData}
+        eventsStructuredData={eventsStructuredData}
+        // structuredData={fullStructuredData}
 
       />
     </Suspense>

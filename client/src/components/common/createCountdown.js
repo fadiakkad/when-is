@@ -200,18 +200,16 @@ const CreateCountdown = () => {
   const KEYWORDS = "إنشاء عد تنازلي, عد تنازلي مجاني, عد تنازلي للمناسبات, حساب الوقت, حدث رياضي, عيد ميلاد, زفاف, حدث هام, ساعة عد تنازلي, مؤقت زمني, عد تنازلي للحفلات, مشاركات العد التنازلي, حساب وقت المناسبات";
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "Event",
+    "@type": "WebSite",
     "name": TITLE,
     "description": DESCRIPTION,
-    "startDate": `${date}T${hour}:00`,
-    "eventStatus": "https://schema.org/EventScheduled",
-    "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
-    "organizer": {
-      "@type": "Organization",
-      "name": "مواعيد",
-      "url": websiteURL
-    },
-    "url": `${websiteURL}/${createCountdownURL}/`
+    "url": `${websiteURL}/${createCountdownURL}/`,
+    "potentialAction": {
+      "@type": "CreateAction",
+      "target": `${websiteURL}/${createCountdownURL}/`,
+      "name": TITLE
+  }
+
   };
   const OG_URL = `${websiteURL}/${createCountdownURL}/`
   return (

@@ -77,15 +77,23 @@ const ArticlePage = () => {
   const contentType = "article";
   const DescriptionForStructuredData = `من خلال هذه المقالة، يمكنكم معرفة ${cardData.cardTitle} في ${countryNames[countryCode]}. كما تعرض لكم هذه المقالة العد التنازلي لـ ${cardData.EventName} بالأشهر والأسابيع والأيام والساعات. وستجدون أيضاً المصادر التي تم الاعتماد عليها في هذا المقال من أجل معرفة موعد ${cardData.EventName} بالتفصيل.`;
   const FullImageURL = `${websiteURL}${images[cardData.cardImg]}`;
-  const structuredData = {
+
+  function convertExcelDateToISO(excelDate) {
+    const excelEpoch = new Date(Date.UTC(1900, 0, 1)); // January 1, 1900
+    const date = new Date(excelEpoch.setDate(excelEpoch.getDate() + excelDate - 1));
+    return date.toISOString(); 
+}
+const formattedDate = convertExcelDateToISO(cardData.LastUpdated);
+
+  const eventsStructuredData = {
     "@context": "https://schema.org",
     "@type": "Event",
     "name": cardData.EventName,
-    "startDate": cardData.TargetDate,
+    "startDate": cardData.targetDate,
     "eventStatus": "https://schema.org/EventScheduled",
     "location": {
       "@type": "Place",
-      "url": OG_URL 
+      "name": countryNames[countryCode], 
     },
     "image": FullImageURL, // The image of the event
     "description": DescriptionForStructuredData,
@@ -97,6 +105,7 @@ const ArticlePage = () => {
     "headline": cardData.Title,
     "image": FullImageURL,
     "description": DescriptionForStructuredData,
+    "dateModified": formattedDate,
     "author": {
       "@type": "Organization",
       "name": "مواعيد"
@@ -110,7 +119,7 @@ const ArticlePage = () => {
       "@id": OG_URL
     }
   };
-  const fullStructuredData = [structuredData, articleStructuredData];
+  // const fullStructuredData = [structuredData, articleStructuredData];
 
   return (
     <Suspense fallback={<LoadingSpinner />}>
@@ -140,7 +149,8 @@ const ArticlePage = () => {
         pageTitle={cardData.cardTitle}
         articleSlug={url}
         where={countryNames[countryCode]}
-        structuredData={fullStructuredData}
+        eventsStructuredData={eventsStructuredData}
+        articleStructuredData={articleStructuredData}
       />
     </Suspense>
   );

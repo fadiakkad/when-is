@@ -41,7 +41,9 @@ const SharedArticlePage = ({
   pageTitle,
   articleSlug,
   where,
-  structuredData
+  structuredData,
+  articleStructuredData,
+  eventsStructuredData,
 
 }) => (
 
@@ -59,6 +61,8 @@ const SharedArticlePage = ({
       articleSlug={articleSlug}
       where={where}
       structuredData={structuredData}
+      articleStructuredData={articleStructuredData}
+      eventsStructuredData={eventsStructuredData}
 
     />
 

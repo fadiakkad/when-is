@@ -33,7 +33,7 @@ function Cards() {
   const images = importAllImages(
     require.context("../../../images", false, /\.(png|jpe?g|webp)$/)
   );
-console.log("countryCode", countryCode);
+  console.log("countryCode", countryCode);
   useEffect(() => {
     const fetchCardData = async () => {
       try {
@@ -54,6 +54,7 @@ console.log("countryCode", countryCode);
             url: row.URL,
             isHoliday: row.isHoliday,
             countryCode: row.countryCode,
+            targetDate: row.TargetDate,
           }));
           setCardData(parsedData);
         } else {
@@ -77,10 +78,27 @@ console.log("countryCode", countryCode);
   const OG_URL = `${websiteURL}/countries/${countryCode}/جميع_المناسبات/`;
 
   const imagesToPreload = cardData.slice(0, 2).map(card => card.cardImg);
+
+  const articleStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": TITLE,
+    "description": DESCRIPTION,
+    "image": logoImage,
+    "author": {
+      "@type": "Organization",
+      "name": "مواعيد"
+    },
+    "datePublished": "2024-10-28T00:00:00Z", 
+    "dateModified": new Date().toISOString(),
+    "mainEntityOfPage": OG_URL
+  };
+
   const eventsStructuredData = cardData.map(card => ({
+    "@context": "https://schema.org",
     "@type": "Event",
     "name": card.cardTitle,
-    "startDate": card.eventDate,
+    "startDate": card.TargetDate,
     "location": {
       "@type": "Place",
       "name": countryNames[countryCode],
@@ -90,11 +108,7 @@ console.log("countryCode", countryCode);
     "description": `اكتشف ${card.cardTitle} في ${countryNames[countryCode]} بالإضافة إلى العد التنازلي.`
   }));
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "itemListElement": eventsStructuredData,
-  };
+
   return (
     <>
       <SharedHelmet
@@ -105,10 +119,9 @@ console.log("countryCode", countryCode);
         COUNTRY_CODE={countryCode}
         taxonomyTerms={KEYWORDS}
         IMAGES_PRELOAD={imagesToPreload}
-        structuredData={structuredData}
         IMAGE={logoImage}
-
-
+        eventsStructuredData={eventsStructuredData}
+        articleStructuredData={articleStructuredData}
       />
       <h1
         style={{

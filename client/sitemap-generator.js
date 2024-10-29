@@ -41,7 +41,14 @@ const manualUrls = [
 
 function formatExcelDate(dateString) {
   if (typeof dateString === 'string') {
-      const parts = dateString.split('/'); // Split the date string
+      // Check if the date is in YYYY-MM-DD format
+      const isoDateRegex = /^\d{4}-\d{2}-\d{2}$/;
+      if (isoDateRegex.test(dateString)) {
+          return dateString; // Return as is if it's already in the correct format
+      }
+
+      // Otherwise, assume it's in DD/MM/YYYY format
+      const parts = dateString.split('/');
       if (parts.length === 3) {
           const day = parseInt(parts[0], 10);
           const month = parseInt(parts[1], 10) - 1; // Month is zero-indexed
@@ -50,15 +57,13 @@ function formatExcelDate(dateString) {
           return date.toISOString().split('T')[0]; // Return in YYYY-MM-DD format
       }
   } else if (typeof dateString === 'number') {
-      // Handle the case if it is a serial number (though in your case, it looks like strings)
+      // Handle the case if it is a serial number
       const date = xlsx.SSF.parse_date_code(dateString);
       return new Date(date.y, date.m - 1, date.d).toISOString().split('T')[0];
   }
-  
   console.warn(`Invalid date format: ${dateString}`);
   return new Date().toISOString().split('T')[0]; // Fallback to current date
 }
-
 // Function to read data from the country-specific Excel files
 function readCountryExcelData(countryCode) {
   const filePath = path.join(__dirname, `./src/Excel/Data/Countries/${countryCode}.xlsx`);
@@ -127,8 +132,12 @@ function generateSitemap() {
  
 
   // Generate sitemap XML
-  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap-image/1.1">
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" 
+        xmlns:xhtml="http://www.w3.org/1999/xhtml" 
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" 
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
     ${urls.map(({ loc, lastmod }) => `
     <url>
         <loc>${loc}</loc>
@@ -136,7 +145,10 @@ function generateSitemap() {
     </url>`).join('')}
 </urlset>`;
 
+
   fs.writeFileSync(sitemapFilePath, sitemap);
+  // count how many urls in the sitemap
+  console.log(`Total URLs in the sitemap: ${urls.length}`);
   console.log(`Sitemap has been generated at ${sitemapFilePath}`);
 }
 

@@ -9,6 +9,8 @@ function SharedHelmet({
   IMAGES_PRELOAD = [],
   COUNTRY_CODE,
   structuredData,
+  articleStructuredData,
+  eventsStructuredData,
   isNotIndexed,
   taxonomyTerms, 
   contentType,
@@ -55,6 +57,16 @@ function SharedHelmet({
         {structuredData && (
           <script type="application/ld+json">
             {JSON.stringify(structuredData)}
+          </script>
+        )}
+        {articleStructuredData && (
+          <script type="application/ld+json">
+            {JSON.stringify(articleStructuredData)}
+          </script>
+        )}
+        {eventsStructuredData && (
+          <script type="application/ld+json">
+            {JSON.stringify(eventsStructuredData)}
           </script>
         )}
         {isNotIndexed && <meta name="robots" content="noindex, nofollow" />}
