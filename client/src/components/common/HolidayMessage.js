@@ -36,7 +36,7 @@ const HolidayMessage = () => {
 
   return (
     <a
-      href={`/${userCountry}/${holidaysURL}/`}
+      href={`/countries/${userCountry}/${holidaysURL}/`}
       style={{
         ...blogTextStyle,
         textDecoration: "none",

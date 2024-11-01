@@ -91,12 +91,27 @@ const formattedDate = convertExcelDateToISO(cardData.LastUpdated);
     "name": cardData.EventName,
     "startDate": cardData.targetDate,
     "eventStatus": "https://schema.org/EventScheduled",
+    "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
     "location": {
       "@type": "Place",
       "name": countryNames[countryCode], 
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": countryNames[countryCode],
+      }
     },
     "image": FullImageURL, // The image of the event
     "description": DescriptionForStructuredData,
+    "performer": {
+      "@type": "Organization",
+      "name": "مواعيد",
+      "url": OG_URL
+    },
+    "organizer": {
+      "@type": "Organization",
+      "name": "مواعيد", 
+      "url": OG_URL
+    },
   };
 
   const articleStructuredData = {

@@ -10,6 +10,11 @@ import { SearchBar } from "../../common/SearchBar.js";
 import SharedHelmet from "../../common/Helmet.js";
 import { countryNames } from "./CountriesNamesCodes.js";
 import { websiteURL, holidaysURL } from "../../common/constants.js";
+import { importAllImages } from "../../../helpers/importImages.js";
+
+const images = importAllImages(
+  require.context("../../../images", false, /\.(png|jpe?g|webp)$/)
+);
 const HolidayTable = () => {
   const location = useLocation();
   // const { holidayData } = location.state || {};
@@ -87,14 +92,32 @@ const HolidayTable = () => {
       "position": index + 1,
       "item": {
         "@type": "Event",
-        "name": holiday.Title,
+        "name": holiday.EventName,
         "location": {
           "@type": "Place",
           "name": countryNames[countryCode],
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": countryNames[countryCode],
+          }
         },
         "startDate": convertExcelDate(holiday.TargetDate),
-        "eventStatus": holiday.TargetDate >= new Date() ? "https://schema.org/EventScheduled" : "https://schema.org/EventCancelled",
-        "description": `عطلة قادمة: اعرف من خلال هذا الموقع ${holiday.Title} في ${countryNames[countryCode]}`
+        "eventStatus":  "https://schema.org/EventScheduled",
+        "description": `عطلة قادمة: اعرف من خلال هذا الموقع ${holiday.Title} في ${countryNames[countryCode]}`,
+        "url": `${websiteURL}/countries/${countryCode}/${holiday.URL}/`,
+        "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+        "performer": {
+          "@type": "Organization",
+          "name": "مواعيد",
+          "url": `${websiteURL}/countries/${countryCode}/${holidaysURL}/`
+        },
+        "organizer": {
+          "@type": "Organization",
+          "name": "مواعيد",
+          "url": `${websiteURL}/countries/${countryCode}/${holidaysURL}/`
+        },
+        "image": `${websiteURL}${images[holiday.ImageURL]}`,
+      
       }
     }))
   } : null;
@@ -171,7 +194,7 @@ const HolidayTable = () => {
           <thead style={{ backgroundColor: "#f1f1f1" }}>
             <tr>
               <th style={blogTextStyle}>اسم الحدث</th>
-              <th style={blogTextStyle}>التاريخ</th>
+              <th style={blogTextStyle}>التاريخ بالميلادي</th>
               <th style={blogTextStyle}>التاريخ بالهجري</th>
               <th style={blogTextStyle}>كم باقي</th>
             </tr>

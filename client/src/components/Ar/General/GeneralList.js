@@ -41,6 +41,8 @@ function General() {
           url: row.URL,
           titleInternal: row.TitleInternal,
           targetDate : row.TargetDate,
+          eventName : row.EventName,
+          
         }));
 
         setCardData(parsedData);
@@ -109,27 +111,38 @@ function General() {
       "name": "مواعيد"  
     },
     "datePublished": "2024-10-28T00:00:00Z", 
-    "dateModified": new Date().toISOString(),  
+    "dateModified": "2024-10-28T00:00:00Z",  
     "mainEntityOfPage": OG_URL  
   };
   
   const eventsStructuredData = cardData.map(card => ({
     "@context": "https://schema.org",
     "@type": "Event",
-    "name": card.cardTitle,  // Event name
+    "name": card.eventName,  // Event name
     "startDate": card.targetDate,  // Event start date
     "image": `${websiteURL}${card.cardImg}`,  // Event image
     "url": `${websiteURL}/${card.url}/`,  // Event URL
     "description": `اكتشف ${card.cardTitle} بالإضافة إلى العد التنازلي.`,  // Event description
+    "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
     "location": {
       "@type": "Place",
-      "name": "مناسبات في الوطن العربي", 
+      "name": "Worldwide", 
       "address": {
         "@type": "PostalAddress",
-        "addressCountry": "AR" 
+        "addressCountry": "Earth" 
       }
     },
-    "eventStatus": "https://schema.org/EventScheduled"  // Event status
+    "eventStatus": "https://schema.org/EventScheduled",
+    "performer": {
+      "@type": "Organization",
+      "name": "مواعيد",
+      "url": `${websiteURL}/${card.url}/`,
+    },
+    "organizer": {
+      "@type": "Organization",
+      "name": "مواعيد", 
+      "url": `${websiteURL}/${card.url}/`,
+    },
   }));
 
  

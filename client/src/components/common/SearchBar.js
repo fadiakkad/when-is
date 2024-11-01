@@ -25,8 +25,7 @@ export const SearchBar = ({ searchTerm, setSearchTerm }) => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          transform: isMobile ? "translateX(10%)" : "translateX(-25%)",
-          width: isMobile ? "90%" : "",
+          transform: isMobile ? "" : "translateX(-25%)",
           ...blogTextStyle,
         }}
       >
@@ -71,10 +70,11 @@ export const SearchBar = ({ searchTerm, setSearchTerm }) => {
           {/* Input Field */}
           <Form.Control
             type="text"
-            placeholder="...ابحث هنا"
+            placeholder="ابحث هنا ......"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             style={{
+              // direction: "ltr",
               padding: "10px",
               fontSize: "1.25rem",
               border: "none",

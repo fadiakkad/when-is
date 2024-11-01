@@ -55,6 +55,7 @@ function Cards() {
             isHoliday: row.isHoliday,
             countryCode: row.countryCode,
             targetDate: row.TargetDate,
+            eventName: row.EventName,
           }));
           setCardData(parsedData);
         } else {
@@ -89,23 +90,41 @@ function Cards() {
       "@type": "Organization",
       "name": "مواعيد"
     },
-    "datePublished": "2024-10-28T00:00:00Z", 
-    "dateModified": new Date().toISOString(),
+    "datePublished": "2024-10-28T00:00:00Z",
+    "dateModified": "2024-11-01T00:00:00Z",
     "mainEntityOfPage": OG_URL
   };
 
   const eventsStructuredData = cardData.map(card => ({
     "@context": "https://schema.org",
     "@type": "Event",
-    "name": card.cardTitle,
-    "startDate": card.TargetDate,
+    "name": card.eventName,
+    "startDate": card.targetDate,
     "location": {
       "@type": "Place",
       "name": countryNames[countryCode],
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": countryNames[countryCode],
+      }
     },
     "image": `${websiteURL}${card.cardImg}`,
     "url": `${websiteURL}/countries/${countryCode}/${card.url}/`,
-    "description": `اكتشف ${card.cardTitle} في ${countryNames[countryCode]} بالإضافة إلى العد التنازلي.`
+    "description": `اكتشف ${card.cardTitle} في ${countryNames[countryCode]} بالإضافة إلى العد التنازلي.`,
+    "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+    "eventStatus": "https://schema.org/EventScheduled",
+    "performer": {
+      "@type": "Organization",
+      "name": "مواعيد",
+      "url": `${websiteURL}/countries/${countryCode}/${card.url}/`
+    },
+    "organizer": {
+      "@type": "Organization",
+      "name": "مواعيد", 
+      "url": `${websiteURL}/countries/${countryCode}/${card.url}/`
+    },
+  
+
   }));
 
 

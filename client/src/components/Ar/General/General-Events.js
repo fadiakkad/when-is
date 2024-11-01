@@ -64,7 +64,7 @@ const ArticlePage = () => {
 
 
 
-  const OG_URL = `${websiteURL}/${articleSlug}`;
+  const OG_URL = `${websiteURL}/${articleSlug}/`;
   const contentType = "article";
   const DescriptionForStructuredData = `من خلال هذه المقالة, يمكنكم معرفة  ${Title} .كما أيضاً تعرض لكم هذه المقالة العد التنازلي ل ${EventName} بالأشهر والأسابيع والأيام والساعات. وستجدون أيضاً المصادر التي تم الاعتماد عليها في هذا المقال من أجل معرفة موعد ${EventName} بالتفصيل.`;
   const FullImageURL = `${websiteURL}${images[ImageURL]}`;
@@ -81,12 +81,27 @@ const formattedDate = convertExcelDateToISO(LastUpdated);
     "name": EventName,
     "startDate": TargetDate,
     "eventStatus": "https://schema.org/EventScheduled",
+    "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
     "location": {
       "@type": "Place",
-      "name": "اسيا, العالم العربي"
+      "name": "Worldwide",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "Earth" 
+      }
     },
     "image": FullImageURL, 
     "description": DescriptionForStructuredData,
+    "performer": {
+      "@type": "Organization",
+      "name": "مواعيد",
+      "url": OG_URL
+    },
+    "organizer": {
+      "@type": "Organization",
+      "name": "مواعيد", 
+      "url": OG_URL
+    },
   };
 
   const articleStructuredData = {
